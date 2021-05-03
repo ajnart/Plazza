@@ -10,6 +10,12 @@
 #include "Help.hpp"
 #include "Error.hpp"
 #include <algorithm>
+#include <vector>
+#include <string>
+#include <iostream>
+#include <sstream>
+#include <regex>
+#include <algorithm>
 
 Reception::Reception()
 {
@@ -19,15 +25,44 @@ Reception::~Reception()
 {
 }
 
+std::vector<std::string> Reception::split(const std::string &s, char block)
+{
+    std::vector<std::string> tokens;
+    std::string token;
+    std::istringstream stream(s);
+
+    while (std::getline(stream, token, block))
+        tokens.push_back(token);
+    return tokens;
+}
+
 bool Reception::checkLine()
 {
-    
+    auto Split = split(_Line, ';');
+    for (auto const &token:Split) {
+        auto command = split(token, ' ');
+        command.erase(std::remove_if(command.begin(), command.end(), [](const std::string &str) { return str.empty(); }), command.end());
+        // error handler cmd
+        // add cmd checker
+        _SplittedCmd.push_back(command);
+    }
+    return true;
+}
+
+void Reception::makeCmd()
+{
+    for (auto const &command:_SplittedCmd)
+        // fill a pizzaCmd struct with _SplittedCmd
+    _SplittedCmd.clear();
 }
 
 bool Reception::run()
 {
     std::cout << "$> ";
     while (getline(std::cin, _Line)) {
+        checkLine();
+        makeCmd();
+        // make algo with each elem of _Commands for (auto const &elem : commands)
         std::cout << "\n$> ";
     }
     return true;
