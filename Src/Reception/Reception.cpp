@@ -19,6 +19,11 @@ Reception::~Reception()
 {
 }
 
+bool Reception::checkLine()
+{
+    
+}
+
 bool Reception::run()
 {
     std::cout << "$> ";

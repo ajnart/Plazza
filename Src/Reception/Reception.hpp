@@ -20,13 +20,12 @@ class Reception {
         float _TimeStockRefill;
         std::chrono::high_resolution_clock::time_point _Time;
         std::string _Line;
-        // std::vector<IPC> ipcs;
-        // plazza::KitchenManager manager;
     public:
         Reception();
         ~Reception();
         int setValue(int ac, char **av);
         bool run();
+        bool checkLine();
 };
 
 #endif /* !RECEPTION_HPP_ */
