@@ -39,6 +39,7 @@ typedef struct pizzaCmd {
     int number;
 } PizzaCmd_t;
 
+namespace Plazza {
 class Reception {
     private:
         float _TimeMultiplier;
@@ -64,5 +65,6 @@ class Reception {
         PizzaCmd_t getCommandFromString(const std::vector<std::string> &com);
         bool cmdChecker(std::vector<std::string> command);
 };
+}
 
 #endif /* !RECEPTION_HPP_ */
