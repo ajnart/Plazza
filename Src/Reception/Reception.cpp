@@ -17,14 +17,6 @@
 #include <regex>
 #include <algorithm>
 
-Reception::Reception()
-{
-}
-
-Reception::~Reception()
-{
-}
-
 std::vector<std::string> Reception::split(const std::string &s, char block)
 {
     std::vector<std::string> tokens;
@@ -36,14 +28,35 @@ std::vector<std::string> Reception::split(const std::string &s, char block)
     return tokens;
 }
 
+bool Reception::cmdChecker(std::vector<std::string> command)
+{
+    for (int i = 0; i < 3; ++i) {
+        if (i == 0) {
+            for (int j = 0; j < 3; ++j) {
+                if (command[i] == _Pizzas[j].first)
+                    return true;
+            } throw("bad type", "cmdChecker");
+        } else if (i == 1) {
+            if (command[i] != "S" && command[i] != "M" && command[i] != "L" && command[i] != "XL" && command[i] != "XXL")
+                throw("bad size", "cmdChecker");
+            return true;
+        } else {
+            if (std::regex_match(command[i], std::regex("x[0-9]*")))
+                return true;
+            throw("bad pizza's number", "cmdChecker");
+        }
+    }
+}
+
 bool Reception::checkLine()
 {
     auto Split = split(_Line, ';');
     for (auto const &token:Split) {
         auto command = split(token, ' ');
         command.erase(std::remove_if(command.begin(), command.end(), [](const std::string &str) { return str.empty(); }), command.end());
-        // error handler cmd
-        // add cmd checker
+        if (command.size() != 3)
+            throw("Error bad size", "checkLine");
+        cmdChecker(command);
         _SplittedCmd.push_back(command);
     }
     return true;
@@ -51,8 +64,24 @@ bool Reception::checkLine()
 
 void Reception::makeCmd()
 {
-    for (auto const &command:_SplittedCmd)
-        // fill a pizzaCmd struct with _SplittedCmd
+    for (auto const &command:_SplittedCmd) {
+        auto newCommand = PizzaCmd_t();
+        for (int i = 0; i < 3; ++i) {
+            if (i == 0) {
+                for (auto const &elem:_Pizzas) {
+                    if (elem.first == command[0])
+                        newCommand.type = elem.second;
+                }
+            } else if (i == 1) {
+                for (auto const &elem:pizzaSizes) {
+                    if (elem.first == command[1])
+                        newCommand.size = elem.second;
+                }
+            } else
+                newCommand.number = atoi(&(command[i].c_str()[1]));
+        }
+        _Commands.push_back(newCommand);
+    }
     _SplittedCmd.clear();
 }
 
@@ -60,7 +89,11 @@ bool Reception::run()
 {
     std::cout << "$> ";
     while (getline(std::cin, _Line)) {
-        checkLine();
+        try {
+            checkLine();
+        } catch (Error &e) {
+            std::cout << e.getWhat() << '\n';
+        }
         makeCmd();
         // make algo with each elem of _Commands for (auto const &elem : commands)
         std::cout << "\n$> ";

@@ -26,6 +26,13 @@ enum class Size {
     XL = 8,
 };
 
+const std::vector<std::pair<std::string, Size>> pizzaSizes = {
+    {"S", Size::S},
+    {"M", Size::M},
+    {"L", Size::L},
+    {"XL", Size::XL},
+};
+
 typedef struct pizzaCmd {
     Type type;
     Size size;
@@ -41,19 +48,21 @@ class Reception {
         std::string _Line;
         std::vector<std::vector<std::string>> _SplittedCmd;
         std::vector<PizzaCmd_t> _Commands;
-        std::vector<std::pair<std::string, Type>> pizzas = {
+        std::vector<std::pair<std::string, Type>> _Pizzas = {
             {"regina", Type::Regina},
             {"margarita", Type::Margarita},
             {"americana", Type::Americana},
         };
     public:
-        Reception();
-        ~Reception();
+        Reception() = default;
+        ~Reception() = default;
         int setValue(int ac, char **av);
         bool run();
         bool checkLine();
         std::vector<std::string> split(const std::string &s, char block);
         void makeCmd();
+        PizzaCmd_t getCommandFromString(const std::vector<std::string> &com);
+        bool cmdChecker(std::vector<std::string> command);
 };
 
 #endif /* !RECEPTION_HPP_ */
