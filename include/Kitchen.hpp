@@ -17,12 +17,7 @@ namespace Plazza
 {
 class Kitchen {
   public:
-    Kitchen(int cookNb, int refillTime, int CookTimeMultiplier) :
-        cookNb(cookNb),
-        refillTime(refillTime),
-        CookTimeMultiplier(CookTimeMultiplier),
-        t(&Kitchen::run, this)
-    {}
+    Kitchen(int cookNb, int refillTime, int CookTimeMultiplier);
     Kitchen(Kitchen const& to_copy) = delete;
     Kitchen(Kitchen&& to_move) = delete;
 
@@ -33,15 +28,15 @@ class Kitchen {
     /*
      * return occupancy of the cooks, and stock of ingredients
      */
-    /* smth */ void status();
+    /* smth */ void status() noexcept;
     /*
      * get the number of pizzas currently in the kitchen
      */
-    int getPizzaNbr();
+    int getPizzaNbr() noexcept;
     /*
      * try to add a pizza to the queue. is kitchen is full, return false
      */
-    bool addPizza(Pizza pizza);
+    bool addPizza(const Pizza& pizza) noexcept;
 
   private:
     /*
@@ -51,9 +46,9 @@ class Kitchen {
     /*
      * have a clock, and call for refill every x ms
      */
-    bool tryRefill();
+    bool tryRefill() noexcept;
     SafeQueue<Pizza> Queue;
-
+    bool stop = false;
     int pizzaNb = 0;
     const int cookNb = 0;
     const int refillTime;
