@@ -1,16 +1,13 @@
 name: C/C++ CI
 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+on: [push, pull_request]
 
 jobs:
-  build:
-  
-    container: epitechcontent/epitest-docker:latest
+  test:
+    container:
+      image: docker://srzzumix/googletest:latest
     runs-on: ubuntu-latest
+    continue-on-error: true
 
     steps:
       - uses: actions/checkout@v2
