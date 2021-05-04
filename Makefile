@@ -33,8 +33,10 @@ NAME	=	plazza
 CPPFLAGS	+=	-I./include
 CXXFLAGS 	+= -O2 -W -Wall -Wextra
 
+LDFLAGS		=	-lpthread
+
 ifneq (,$(findstring debug,$(MAKECMDGOALS)))
-	CPPFLAGS += -g3
+	CPPFLAGS += -g
 endif
 
 ifneq (,$(findstring tests,$(MAKECMDGOALS)))
@@ -52,7 +54,7 @@ message:
 	@echo -e "\e[1m[INFO]\t$(GREEN)Compilation successful ✔$(END)"
 
 $(NAME): $(OBJ)
-	@$(CXX) -o $@ $^ $(CXXFLAGS)
+	@$(CXX) -o $@ $^ $(CXXFLAGS) $(LDFLAGS)
 
 
 .SECONDEXPANSION:
@@ -74,8 +76,8 @@ clean:
 	@rm -rfv $(shell find $(BUILD_DIR) -name "*.o")
 	@rm -rfv $(shell find $(BUILD_DIR) -name "*.d")
 
-debug: $(OBJ)
-	@$(CXX) -o $(NAME).debug $(CPPFLAGS) $^
+debug:: clean
+debug:: all
 	@$(call rich_echo,"🔨","Debug biniary set")
 
 
