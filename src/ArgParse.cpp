@@ -19,13 +19,13 @@ bool ArgParse::isArgsNumberCorrect(int ac) noexcept
 params_t ArgParse::ParseArgs(char** args)
 {
     params_t params;
-
+    
     try {
         params.multiplier = std::stof(args[1]);
         params.chefs_nbr = std::stoi(args[2]);
         params.stock_refill_time = std::stof(args[3]);
     } catch (std::invalid_argument) {
-        throw Plazza::PlazzaException("too much or missing arguments.");
+        throw Plazza::PlazzaException("Too many or missing arguments.");
     }
     return params;
 }

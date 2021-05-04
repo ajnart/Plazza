@@ -18,13 +18,12 @@ int plazza(params_t);
 
 int main(int ac, char** av)
 {
-    if (!ArgParse::isArgsNumberCorrect(ac)) {
-        if (av[1] &&
-            (std::string(av[1]) == "-h" || std::string(av[1]) == "--help")) {
+    if (ac == 2 && (std::string(av[1]) == "-h" || std::string(av[1]) == "--help")) {
             ArgParse::printHelp();
             return 0;
-        }
     }
+    if (ac != 4)
+        return 84;
     params_t params;
     try {
         params = ArgParse::ParseArgs(av);
