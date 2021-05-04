@@ -76,7 +76,7 @@ clean:
 	@rm -rfv $(shell find $(BUILD_DIR) -name "*.d")
 
 debug:: clean
-debug:: $(NAME)
+debug:: all
 	@$(call rich_echo,"🔨","Debug biniary set")
 
 
