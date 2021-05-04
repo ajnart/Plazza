@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <mutex>
+
 namespace Plazza {
 struct Ingredients_t {
     int Does = 0;
@@ -26,20 +28,24 @@ class FoodStock {
      * fill Ingredients with 5 unit for each Ingredients
      */
     FoodStock();
-    FoodStock(FoodStock const& to_copy) = default;
-    FoodStock(FoodStock&& to_move) = default;
+    FoodStock(FoodStock const& to_copy) = delete;
+    FoodStock(FoodStock&& to_move) = delete;
 
     ~FoodStock() = default;
 
-    FoodStock& operator=(FoodStock const& to_copy) = default;
+    FoodStock& operator=(FoodStock const& to_copy) = delete;
 
     /*
      * remove i from Ingredients. if there is not enough Ingredients,
      * return false, else, return true
      */
     bool getIngredients(const Ingredients_t& i);
-
+    /*
+     * refill every ingredients
+     */
+    void refill();
    private:
     Ingredients_t Ingredients;
+    std::mutex m;
 };
 }

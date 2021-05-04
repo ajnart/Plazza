@@ -7,25 +7,37 @@
 
 #pragma once
 #include <queue>
-#include "Mutex.hpp"
+#include <mutex>
 
-namespace Plazza {
+template <typename T>
 class SafeQueue {
   public:
     SafeQueue() = default;
-    SafeQueue(SafeQueue const& to_copy) = default;
-    SafeQueue(SafeQueue&& to_move) = default;
+    SafeQueue(SafeQueue const& to_copy) = delete;
+    SafeQueue(SafeQueue&& to_move) = delete;
 
     ~SafeQueue() = default;
 
-    SafeQueue& operator=(SafeQueue const& to_copy) = default;
+    SafeQueue& operator=(SafeQueue const& to_copy) = delete;
 
-    void push(int value);
+    void push(T value) {
+        std::unique_lock<std::mutex> ul(this->m);
+
+        queue.push(value);
+    }
     /*
      * try to pop an element from the queue, and store it in value
      */
-    bool tryPop(int &value);
+    bool tryPop(T &value) {
+        std::unique_lock<std::mutex> ul(this->m);
+
+        if (!m.try_lock()) {
+            return false;
+        }
+        value = this->queue.front();
+        this.queue.pop();
+    }
   private:
-    std::queue<Mutex> queue;
+    std::queue<T> queue;
+    std::mutex m;
 };
-}
