@@ -34,8 +34,10 @@ CPPFLAGS	+=	-I./include
 CXXFLAGS 	+= -O2 -W -Wall -Wextra
 LDLIBS 		+= -lpthread
 
+LDLIBS		=	-lpthread
+
 ifneq (,$(findstring debug,$(MAKECMDGOALS)))
-	CXXFLAGS += -g3
+	CXXFLAGS += -g
 endif
 
 ifneq (,$(findstring tests,$(MAKECMDGOALS)))
@@ -52,8 +54,7 @@ message:
 	@echo -e "\e[1m[INFO]\t$(GREEN)Compilation successful ✔$(END)"
 
 $(NAME): $(OBJ)
-	$(CXX) -o $@ $^ $(CXXFLAGS) $(LDLIBS)
-
+	@$(CXX) -o $@ $^ $(CXXFLAGS) $(LDLIBS)
 
 .SECONDEXPANSION:
 $(BUILD_DIR)/%.o: override CPPFLAGS += -MT $@ -MMD -MP -MF $(@:.o=.d)
@@ -74,7 +75,8 @@ clean:
 	@rm -rfv $(shell find $(BUILD_DIR) -name "*.o")
 	@rm -rfv $(shell find $(BUILD_DIR) -name "*.d")
 
-debug: $(NAME)
+debug:: clean
+debug:: $(NAME)
 	@$(call rich_echo,"🔨","Debug biniary set")
 
 
