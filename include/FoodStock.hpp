@@ -9,8 +9,10 @@
 
 #include <mutex>
 
-namespace Plazza {
-struct Ingredients_t {
+namespace Plazza
+{
+struct Ingredients_t
+{
     int Does = 0;
     int Tomatoes = 0;
     int Gruyere = 0;
@@ -23,7 +25,7 @@ struct Ingredients_t {
 };
 
 class FoodStock {
-   public:
+  public:
     /*
      * fill Ingredients with 5 unit for each Ingredients
      */
@@ -44,7 +46,8 @@ class FoodStock {
      * refill every ingredients
      */
     void refill();
-   private:
+
+  private:
     Ingredients_t Ingredients;
     std::mutex m;
 };

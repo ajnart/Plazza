@@ -8,17 +8,18 @@
 #pragma once
 #include <string>
 
-struct params_t {
+struct params_t
+{
     float multiplier;
     unsigned int chefs_nbr;
     float stock_refill_time;
 };
 
 class ArgParse {
-   public:
+  public:
     static bool isArgsNumberCorrect(int ac) noexcept;
-    static params_t ParseArgs(char **args);
+    static params_t ParseArgs(char** args);
     static void printHelp() noexcept;
 
-   private:
+  private:
 };

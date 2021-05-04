@@ -11,11 +11,13 @@
 #include "ArgParse.hpp"
 #include "PlazzaException.hpp"
 
-namespace Plazza {
+namespace Plazza
+{
 int plazza(params_t);
-}  // namespace Plazza
+} // namespace Plazza
 
-int main(int ac, char **av) {
+int main(int ac, char** av)
+{
     if (!ArgParse::isArgsNumberCorrect(ac)) {
         if (av[1] &&
             (std::string(av[1]) == "-h" || std::string(av[1]) == "--help")) {

@@ -8,9 +8,11 @@
 #include "ArgParse.hpp"
 #include "Reception/Reception.hpp"
 
-namespace Plazza {
-int plazza(params_t params) {
+namespace Plazza
+{
+int plazza(params_t params)
+{
     // do shit idk
     return 0;
 }
-}  // namespace Plazza
+} // namespace Plazza

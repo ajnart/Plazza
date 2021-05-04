@@ -11,11 +11,13 @@
 
 #include "PlazzaException.hpp"
 
-bool ArgParse::isArgsNumberCorrect(int ac) noexcept {
+bool ArgParse::isArgsNumberCorrect(int ac) noexcept
+{
     return ac == 4 ? false : true;
 }
 
-params_t ArgParse::ParseArgs(char **args) {
+params_t ArgParse::ParseArgs(char** args)
+{
     params_t params;
 
     try {
@@ -28,4 +30,7 @@ params_t ArgParse::ParseArgs(char **args) {
     return params;
 }
 
-void ArgParse::printHelp() noexcept { std::cout << "bite"; }
+void ArgParse::printHelp() noexcept
+{
+    std::cout << "bite";
+}

@@ -13,7 +13,8 @@
 
 #include "FoodStock.hpp"
 
-namespace Plazza {
+namespace Plazza
+{
 static const std::array<std::tuple<std::string, Ingredients_t, int>, 4> pizzas =
     {std::tuple<std::string, Ingredients_t, int>(
          "Margarita", Ingredients_t{.Does = 1, .Tomatoes = 1, .Gruyere = 1},

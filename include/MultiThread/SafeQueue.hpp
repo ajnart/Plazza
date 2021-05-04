@@ -6,8 +6,8 @@
 */
 
 #pragma once
-#include <queue>
 #include <mutex>
+#include <queue>
 
 template <typename T>
 class SafeQueue {
@@ -20,7 +20,8 @@ class SafeQueue {
 
     SafeQueue& operator=(SafeQueue const& to_copy) = delete;
 
-    void push(T value) {
+    void push(T value)
+    {
         std::unique_lock<std::mutex> ul(this->m);
 
         queue.push(value);
@@ -28,15 +29,17 @@ class SafeQueue {
     /*
      * try to pop an element from the queue, and store it in value
      */
-    bool tryPop(T &value) {
+    bool tryPop(T& value)
+    {
         std::unique_lock<std::mutex> ul(this->m);
 
         if (!m.try_lock()) {
             return false;
         }
         value = this->queue.front();
-        this.queue.pop();
+        this->queue.pop();
     }
+
   private:
     std::queue<T> queue;
     std::mutex m;
