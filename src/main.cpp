@@ -22,14 +22,13 @@ int main(int ac, char** av)
             ArgParse::printHelp();
             return 0;
     }
-    if (ac != 4)
+    if (!ArgParse::isArgsNumberCorrect(ac))
         return 84;
     params_t params;
     try {
         params = ArgParse::ParseArgs(av);
     } catch (Plazza::PlazzaException exp) {
         std::cout << exp.what();
-        ArgParse::printHelp();
         return 84;
     }
 
