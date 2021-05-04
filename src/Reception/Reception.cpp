@@ -44,12 +44,12 @@ bool Reception::cmdChecker(std::vector<std::string> command)
             if (command[i] != "S" && command[i] != "M" && command[i] != "L" &&
                 command[i] != "XL" && command[i] != "XXL")
                 throw(PlazzaException(
-                    "Invalid pizza size. Valid size are [S/M/L/XL/XXL]"));
+                    "Invalid pizza size. Valid sizes are [S/M/L/XL/XXL]"));
             return true;
         } else {
             if (std::regex_match(command[i], std::regex("x[0-9]*")))
                 return true;
-            throw(PlazzaException("invalid pizza's number"));
+            throw(PlazzaException("Invalid number of pizzas."));
         }
     }
     return false;

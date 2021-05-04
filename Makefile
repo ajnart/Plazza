@@ -36,7 +36,7 @@ CXXFLAGS 	+= -O2 -W -Wall -Wextra
 LDLIBS		=	-lpthread
 
 ifneq (,$(findstring debug,$(MAKECMDGOALS)))
-	CXXFLAGS += -g
+	CPPFLAGS += -g -D__DEBUG
 endif
 
 ifneq (,$(findstring tests,$(MAKECMDGOALS)))
