@@ -15,7 +15,7 @@ bool ArgParse::isArgsNumberCorrect(int ac) noexcept
 {
     if (ac == 4)
         return true;
-    std::cerr << "Not enough or too many arguments. Do ./plazza -h to learn about the arugments." << std::endl;
+    std::cerr << "Wrong number of arguments. Do ./plazza -h to learn about the program." << std::endl;
     return false;
 }
 
@@ -28,7 +28,7 @@ params_t ArgParse::ParseArgs(char** args)
         params.chefs_nbr = std::stoi(args[2]);
         params.stock_refill_time = std::stof(args[3]);
     } catch (std::invalid_argument) {
-        throw Plazza::PlazzaException("Invalid arguments. Do ./plazza -h to learn about required arguments.");
+        throw Plazza::PlazzaException("Invalid arguments. Do ./plazza -h to learn about argument formats.");
     }
     return params;
 }
