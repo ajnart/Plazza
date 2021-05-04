@@ -12,14 +12,10 @@
 #include <iostream>
 #include <unordered_map>
 #include <vector>
+#include "Pizza.hpp"
 
-enum class Type
+namespace Plazza
 {
-    Regina = 1,
-    Margarita = 2,
-    Americana = 4,
-};
-
 enum class Size
 {
     S = 1,
@@ -35,15 +31,13 @@ const std::vector<std::pair<std::string, Size>> pizzaSizes = {
     {"XL", Size::XL},
 };
 
-typedef struct pizzaCmd
+struct PizzaCmd_t
 {
-    Type type;
+    Pizza type;
     Size size;
     int number;
-} PizzaCmd_t;
+};
 
-namespace Plazza
-{
 class Reception {
   private:
     float _TimeMultiplier;
@@ -53,10 +47,10 @@ class Reception {
     std::string _Line;
     std::vector<std::vector<std::string>> _SplittedCmd;
     std::vector<PizzaCmd_t> _Commands;
-    std::vector<std::pair<std::string, Type>> _Pizzas = {
-        {"regina", Type::Regina},
-        {"margarita", Type::Margarita},
-        {"americana", Type::Americana},
+    std::vector<std::pair<std::string, Pizza>> _Pizzas = {
+        {"regina", Pizza::Regina},
+        {"margarita", Pizza::Margarita},
+        {"americana", Pizza::Americana},
     };
 
   public:

@@ -11,6 +11,7 @@
 
 #include "FoodStock.hpp"
 #include "MultiThread/SafeQueue.hpp"
+#include "Pizza.hpp"
 
 namespace Plazza
 {
@@ -29,27 +30,35 @@ class Kitchen {
 
     Kitchen& operator=(Kitchen const& to_copy) = delete;
 
-    bool isKitchenFull();
-    int getPizzaNb();
     /*
      * return occupancy of the cooks, and stock of ingredients
      */
     /* smth */ void status();
     /*
-     * have a clock, and call for refill every x ms
+     * get the number of pizzas currently in the kitchen
      */
+    int getPizzaNbr();
+    /*
+     * try to add a pizza to the queue. is kitchen is full, return false
+     */
+    bool addPizza(Pizza pizza);
+
+  private:
     /*
      * create a thread with given function, and self
      */
-
-  private:
     void run();
+    /*
+     * have a clock, and call for refill every x ms
+     */
     bool tryRefill();
+    SafeQueue<Pizza> Queue;
+
     int pizzaNb = 0;
     const int cookNb = 0;
     const int refillTime;
     const int CookTimeMultiplier;
     std::thread t;
-    SafeQueue<int/*Pizza Class type*/> queue;
+    FoodStock Stock;
 };
 } // namespace Plazza
