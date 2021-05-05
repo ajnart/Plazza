@@ -10,9 +10,10 @@
 
 namespace Plazza
 {
-int plazza(params_t params)
-{
-    // do shit idk
-    return 0;
-}
-} // namespace Plazza
+    int plazza(params_t params)
+    {
+        Reception reception;
+        reception.run();
+        return 0;
+    }
+}    // namespace Plazza

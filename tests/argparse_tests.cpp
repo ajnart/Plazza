@@ -10,5 +10,5 @@
 
 TEST(argparse, normal_args)
 {
-    ASSERT_EQ(ArgParse::isArgsNumberCorrect(4), false); // Checks if 4 arguments is valid
+    ASSERT_EQ(ArgParse::isArgsNumberCorrect(4), true); // Checks if 4 arguments is valid
 }

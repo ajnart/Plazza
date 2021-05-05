@@ -37,7 +37,7 @@ LDLIBS 		+= -lpthread
 LDLIBS		=	-lpthread
 
 ifneq (,$(findstring debug,$(MAKECMDGOALS)))
-	CXXFLAGS += -g
+	CPPFLAGS += -g -D__DEBUG
 endif
 
 ifneq (,$(findstring tests,$(MAKECMDGOALS)))
@@ -84,10 +84,9 @@ fclean:	clean
 	@rm -fv $(NAME) $(NAME).debug $(NAME).gtest
 
 tests_run: $(OBJ)
-	@$(CXX) -o $(NAME).gtest $(TEST_OBJ) $(CPPFLAGS) tests/*.cpp
+	@$(CXX) -o $(NAME).gtest $(TEST_OBJ) $(CPPFLAGS) -lgtest -lgtest_main -pthread $(LDLIBS) tests/*.cpp
 	@$(call rich_echo,"🔨","Unit tests building done")
 	./$(NAME).gtest
-	@gcovr --exclude tests
 	$(CLEAR)
 
 re::	fclean
