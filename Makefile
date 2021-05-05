@@ -84,7 +84,7 @@ fclean:	clean
 	@rm -fv $(NAME) $(NAME).debug $(NAME).gtest
 
 tests_run: $(OBJ)
-	@$(CXX) -o $(NAME).gtest $(TEST_OBJ) $(CPPFLAGS) -lpthread tests/*.cpp
+	@$(CXX) -o $(NAME).gtest $(TEST_OBJ) $(CPPFLAGS) $(LDLIBS) tests/*.cpp
 	@$(call rich_echo,"🔨","Unit tests building done")
 	./$(NAME).gtest
 	@gcovr --exclude tests
