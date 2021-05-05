@@ -38,9 +38,11 @@ params_t ArgParse::ParseArgs(char** args)
 
 void ArgParse::printHelp() noexcept
 {
-    std::cout
-        << "Usage:\n"
-        "- c:\tmultiplier for the cooking time of the pizzas.\n"
-        "- n:\tthe number of cooks per kitchen.\n"
-        "- t:\tthe time in milliseconds, used by the kitchen stock to replace ingredients." << std::endl;
+    std::cout << "Usage:\n"
+                 "- c:\tmultiplier for the cooking time of the pizzas.\n"
+                 "- n:\tthe number of cooks per kitchen.\n"
+                 "- t:\tthe time in milliseconds, used by the kitchen stock to "
+                 "replace ingredients.\n"
+                 "Example : ./plazza 2 5 2000"
+              << std::endl;
 }
