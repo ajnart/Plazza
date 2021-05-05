@@ -95,6 +95,11 @@ bool Reception::checkLine()
 void Reception::makeCmd()
 {
     for (auto const& command: _SplittedCmd) {
+#ifdef __DEBUG
+        std::cout << "- ";
+        for (auto i = command.begin(); i != command.end(); ++i)
+            std::cout << *i << ' ';
+#endif
         auto newCommand = PizzaCmd_t();
         for (int i = 0; i < 3; ++i) {
             if (i == 0) {
@@ -108,7 +113,7 @@ void Reception::makeCmd()
                         newCommand.size = elem.second;
                 }
             } else
-                newCommand.number = atoi(&(command[i].c_str()[1]));
+                newCommand.number = std::stoi(&(command[i].c_str()[1]));
         }
         _Commands.push_back(newCommand);
     }
@@ -122,7 +127,7 @@ bool Reception::run()
         try {
             checkLine();
         } catch (PlazzaException& e) {
-            std::cout << e.what() << '\n';
+            std::cout << e.what() << std::endl;
         }
         makeCmd();
         // make algo with each elem of _Commands for (auto const &elem :
