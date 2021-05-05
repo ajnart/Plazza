@@ -32,6 +32,7 @@ NAME	=	plazza
 
 CPPFLAGS	+=	-I./include
 CXXFLAGS 	+= -O2 -W -Wall -Wextra
+LDLIBS 		+= -lpthread
 
 LDLIBS		=	-lpthread
 
@@ -54,7 +55,6 @@ message:
 
 $(NAME): $(OBJ)
 	@$(CXX) -o $@ $^ $(CXXFLAGS) $(LDLIBS)
-
 
 .SECONDEXPANSION:
 $(BUILD_DIR)/%.o: override CPPFLAGS += -MT $@ -MMD -MP -MF $(@:.o=.d)

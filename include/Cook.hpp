@@ -8,21 +8,26 @@
 #pragma once
 
 #include <thread>
+#include <atomic>
 
+namespace Plazza {
 class Cook {
   public:
-    Cook(int timeMs) : t(&Cook::cook, this, timeMs)
-    {}
+    Cook();
     Cook(Cook const& to_copy) = delete;
     Cook(Cook&& to_move) = delete;
 
-    ~Cook() = default;
+    ~Cook();
 
     Cook& operator=(Cook const& to_copy) = delete;
 
-    void cook(int timeMs);
+    void bake(int timeMs) noexcept;
+    bool isBusy() noexcept;
 
   private:
+    void baking(int time);
+    std::atomic_bool busy;
     std::thread t;
 };
 
+}
