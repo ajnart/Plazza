@@ -9,6 +9,7 @@
 
 #include <thread>
 
+#include "Cook.hpp"
 #include "FoodStock.hpp"
 #include "MultiThread/SafeQueue.hpp"
 #include "Pizza.hpp"
@@ -39,6 +40,7 @@ class Kitchen {
     bool addPizza(const Pizza& pizza) noexcept;
 
   private:
+    bool CookManager(std::tuple<Pizza, Ingredients_t, int>);
     /*
      * create a thread with given function, and self
      */
@@ -55,5 +57,6 @@ class Kitchen {
     const int CookTimeMultiplier;
     std::thread t;
     FoodStock Stock;
+    std::vector<Cook> Cooks;
 };
 } // namespace Plazza

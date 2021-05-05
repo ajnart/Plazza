@@ -17,6 +17,7 @@ namespace Plazza
 {
 enum class Pizza
 {
+    None = 0,
     Regina = 1,
     Margarita = 2,
     Americana = 4,
@@ -32,7 +33,8 @@ enum class Pizza
 // int GoatCheese = 0;
 // int ChiefLove = 0;
 
-static const std::array<std::tuple<Pizza, Ingredients_t, int>, 4> pizzas = {
+static const std::array<std::tuple<Pizza, Ingredients_t, int>, 5> pizzas = {
+    std::tuple<Pizza, Ingredients_t, int>(Pizza::None, Ingredients_t{}, 0),
     std::tuple<Pizza, Ingredients_t, int>(Pizza::Margarita,
                                           Ingredients_t{.Does = 1,
                                                         .Tomatoes = 1,

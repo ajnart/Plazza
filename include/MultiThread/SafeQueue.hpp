@@ -36,8 +36,11 @@ class SafeQueue {
         if (!m.try_lock()) {
             return false;
         }
+        if (this->queue.empty())
+            return false;
         value = this->queue.front();
         this->queue.pop();
+        return true;
     }
 
   private:
