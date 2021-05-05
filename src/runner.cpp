@@ -12,8 +12,11 @@ namespace Plazza
 {
     int plazza(params_t params)
     {
-        Reception reception;
-        reception.run();
+        Plazza::Kitchen k{15, 2000, 2};
+        k.status();
+        k.stop();
+        // Reception reception;
+        // reception.run();
         return 0;
     }
 }    // namespace Plazza

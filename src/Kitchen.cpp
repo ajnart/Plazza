@@ -9,6 +9,7 @@
 #include "PlazzaException.hpp"
 #include <algorithm>
 #include <chrono>
+#include <iostream>
 #include <tuple>
 #include <unistd.h>
 
@@ -24,7 +25,19 @@ Kitchen::Kitchen(int cookNb, int refillTime, int CookTimeMultiplier) :
 
 void Kitchen::status(void) noexcept
 {
-    return;
+    std::cout << "Kitchen #" << this->id << std::endl;
+    Plazza::Ingredients_t i = this->Stock.getIngredients();
+    std::cout << "Ingredients:\n"
+              << "D:" << i.Does << "\tT:" << i.Tomatoes << "\tG:" << i.Gruyere
+              << std::endl
+              << "H:" << i.Ham << "\tM:" << i.Mushrooms << "\tS:" << i.Steak
+              << std::endl
+              << "E:" << i.Eggplant << "\tGC:" << i.GoatCheese
+              << "\tCL:" << i.ChiefLove << std::endl;
+
+    for (auto& i: this->Cooks)
+        std::cout << (i.isBusy() ? "\033[31m •\033[0m" : "\033[32m •\033[0m");
+    std::cout << std::endl;
 }
 
 int Kitchen::getPizzaNbr() noexcept
@@ -71,7 +84,7 @@ void Kitchen::run()
 {
     Pizza pizza;
     attr attributes = getPizzaAttributes(Pizza::None);
-    while (!this->stop) {
+    while (this->running) {
         this->tryRefill();
         if (std::get<0>(attributes) == Pizza::None) {
             if (this->Queue.tryPop(pizza)) {
@@ -85,7 +98,6 @@ void Kitchen::run()
                 attributes = getPizzaAttributes(Pizza::None);
             }
         }
-        usleep(10); // TODO: del
     }
 }
 

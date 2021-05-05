@@ -13,6 +13,7 @@
 #include <unordered_map>
 #include <vector>
 #include "Pizza.hpp"
+#include "Kitchen.hpp"
 
 namespace Plazza
 {
@@ -53,12 +54,14 @@ class Reception {
         {"margarita", Pizza::Margarita},
         {"americana", Pizza::Americana},
     };
+    std::vector<Kitchen> kitchens;
 
   public:
     Reception() = default;
     ~Reception() = default;
     int setValue(int ac, char** av);
     bool run();
+    void printStatus();
     bool checkLine();
     std::vector<std::string> split(const std::string& s, char block);
     void makeCmd();
