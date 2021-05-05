@@ -37,11 +37,12 @@ class FoodStock {
 
     FoodStock& operator=(FoodStock const& to_copy) = delete;
 
-    /*
-     * remove i from Ingredients. if there is not enough Ingredients,
-     * return false, else, return true
-     */
     bool tryConsumeIngredients(const Ingredients_t& i);
+    /*
+     * get all the ingredients contained in the foostock.
+     * Usefull for status.
+     */
+    const Ingredients_t& getIngredients();
     /*
      * refill every ingredients
      */

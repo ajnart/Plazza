@@ -22,7 +22,10 @@ class Kitchen {
     Kitchen(Kitchen const& to_copy) = delete;
     Kitchen(Kitchen&& to_move) = delete;
 
-    ~Kitchen() = default;
+    ~Kitchen()
+    {
+        t.join();
+    }
 
     Kitchen& operator=(Kitchen const& to_copy) = delete;
 
@@ -38,6 +41,7 @@ class Kitchen {
      * try to add a pizza to the queue. is kitchen is full, return false
      */
     bool addPizza(const Pizza& pizza) noexcept;
+    void stop() noexcept { this->running = false; }
 
   private:
     bool CookManager(std::tuple<Pizza, Ingredients_t, int>);
@@ -48,10 +52,11 @@ class Kitchen {
     /*
      * have a clock, and call for refill every x ms
      */
+    int id = 0; // Kitchen ID. > needed for status.
     bool tryRefill() noexcept;
     SafeQueue<Pizza> Queue;
-    bool stop = false;
     int pizzaNb = 0;
+    bool running = true;
     const int cookNb = 0;
     const int refillTime;
     const int CookTimeMultiplier;

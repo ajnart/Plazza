@@ -14,6 +14,7 @@
 #include <regex>
 #include <sstream>
 #include <string>
+#include <tuple>
 #include <vector>
 
 #include "ArgParse.hpp"
@@ -56,7 +57,14 @@ bool Reception::cmdChecker(std::vector<std::string> command)
     return false;
 }
 
-static void help()
+void Reception::printStatus() {
+    for (auto &i : kitchens)
+    {
+        i.status();
+    }
+}
+
+static void printHelp()
 {
     std::cout << "Pizza ordering MUST respect the following grammar:"
               << std::endl
@@ -72,7 +80,12 @@ static void help()
 bool Reception::checkLine()
 {
     if (_Line == "help") {
-        help();
+        printHelp();
+        return false;
+    }
+    if (_Line == "status")
+    {
+        Reception::printStatus();
         return false;
     }
     auto Split = split(_Line, ';');
@@ -124,6 +137,8 @@ bool Reception::run()
 {
     std::cout << "$> ";
     while (getline(std::cin, _Line)) {
+        if (_Line == "exit") // HERE: Bonus 🚀
+            break;
         try {
             checkLine();
         } catch (PlazzaException& e) {
