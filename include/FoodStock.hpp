@@ -41,7 +41,7 @@ class FoodStock {
      * remove i from Ingredients. if there is not enough Ingredients,
      * return false, else, return true
      */
-    bool getIngredients(const Ingredients_t& i);
+    bool tryConsumeIngredients(const Ingredients_t& i);
     /*
      * refill every ingredients
      */
@@ -49,6 +49,5 @@ class FoodStock {
 
   private:
     Ingredients_t Ingredients;
-    std::mutex m;
 };
 }

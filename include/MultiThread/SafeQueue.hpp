@@ -31,9 +31,9 @@ class SafeQueue {
      */
     bool tryPop(T& value)
     {
-        std::unique_lock<std::mutex> ul(this->m);
+        std::unique_lock<std::mutex> ul(this->m, std::try_to_lock);
 
-        if (!m.try_lock()) {
+        if (!ul) {
             return false;
         }
         if (this->queue.empty())

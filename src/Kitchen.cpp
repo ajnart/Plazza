@@ -46,7 +46,8 @@ using attr = std::tuple<Pizza, Ingredients_t, int>;
 bool Kitchen::CookManager(attr attrs)
 {
     for (auto cook = this->Cooks.begin(); cook != this->Cooks.end(); cook++) {
-        if (!cook->isBusy() && this->Stock.getIngredients(std::get<1>(attrs))) {
+        if (!cook->isBusy() &&
+            this->Stock.tryConsumeIngredients(std::get<1>(attrs))) {
             cook->bake(std::get<2>(attrs) * this->CookTimeMultiplier);
             return true;
         }

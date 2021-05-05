@@ -14,7 +14,7 @@ FoodStock::FoodStock()
     return;
 }
 
-bool FoodStock::getIngredients(const Ingredients_t& i)
+bool FoodStock::tryConsumeIngredients(const Ingredients_t& i)
 {
     return true;
 }
