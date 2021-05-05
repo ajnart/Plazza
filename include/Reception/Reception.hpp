@@ -49,6 +49,7 @@ class Reception {
     std::vector<PizzaCmd_t> _Commands;
     std::vector<std::pair<std::string, Pizza>> _Pizzas = {
         {"regina", Pizza::Regina},
+        {"fantasia", Pizza::Fantasia},
         {"margarita", Pizza::Margarita},
         {"americana", Pizza::Americana},
     };

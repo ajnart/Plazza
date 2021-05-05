@@ -16,6 +16,7 @@
 #include <string>
 #include <vector>
 
+#include "ArgParse.hpp"
 #include "PlazzaException.hpp"
 
 namespace Plazza
@@ -55,8 +56,25 @@ bool Reception::cmdChecker(std::vector<std::string> command)
     return false;
 }
 
+static void help()
+{
+    std::cout << "Pizza ordering MUST respect the following grammar:"
+              << std::endl
+              << "S := TYPE SIZE NUMBER[; TYPE SIZE NUMBER]* TYPE :"
+              << std::endl
+              << "Type\t= [a..zA..Z] + SIZE :" << std::endl
+              << "Size\t= S | M | L | XL | XXL NUMBER :" << std::endl
+              << "Number\t= x[1..9][0..9] *" << std::endl
+              << "Ordering example which is grammatically valid:" << std::endl
+              << "regina XXL x2; fantasia M x3;margarita S x1\"" << std::endl;
+}
+
 bool Reception::checkLine()
 {
+    if (_Line == "help") {
+        help();
+        return false;
+    }
     auto Split = split(_Line, ';');
     for (auto const& token: Split) {
         auto command = split(token, ' ');
@@ -66,7 +84,8 @@ bool Reception::checkLine()
                                      }),
                       command.end());
         if (command.size() != 3)
-            throw(PlazzaException("Invalid size"));
+            throw(PlazzaException(
+                "Invalid arguments. Type 'help' to view help."));
         cmdChecker(command);
         _SplittedCmd.push_back(command);
     }
@@ -76,6 +95,11 @@ bool Reception::checkLine()
 void Reception::makeCmd()
 {
     for (auto const& command: _SplittedCmd) {
+#ifdef __DEBUG
+        std::cout << "- ";
+        for (auto i = command.begin(); i != command.end(); ++i)
+            std::cout << *i << ' ';
+#endif
         auto newCommand = PizzaCmd_t();
         for (int i = 0; i < 3; ++i) {
             if (i == 0) {
@@ -89,7 +113,7 @@ void Reception::makeCmd()
                         newCommand.size = elem.second;
                 }
             } else
-                newCommand.number = atoi(&(command[i].c_str()[1]));
+                newCommand.number = std::stoi(&(command[i].c_str()[1]));
         }
         _Commands.push_back(newCommand);
     }
@@ -103,7 +127,7 @@ bool Reception::run()
         try {
             checkLine();
         } catch (PlazzaException& e) {
-            std::cout << e.what() << '\n';
+            std::cout << e.what() << std::endl;
         }
         makeCmd();
         // make algo with each elem of _Commands for (auto const &elem :
