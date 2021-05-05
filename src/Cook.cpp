@@ -30,7 +30,6 @@ void Cook::bake(int timeMs) noexcept
 {
     this->busy.store(true);
     t = std::thread(&Cook::baking, this, timeMs);
-    t.join();
 }
 
 void Cook::baking(int time)
