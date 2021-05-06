@@ -8,13 +8,14 @@
 #pragma once
 #include <mutex>
 #include <queue>
+#include <memory>
 
 template <typename T>
 class SafeQueue {
   public:
     SafeQueue() = default;
     SafeQueue(SafeQueue const& to_copy) = delete;
-    SafeQueue(SafeQueue&& to_move) = delete;
+    SafeQueue(SafeQueue&& to_move) = default;
 
     ~SafeQueue() = default;
 
@@ -22,7 +23,7 @@ class SafeQueue {
 
     void push(T value)
     {
-        std::unique_lock<std::mutex> ul(this->m);
+        std::unique_lock<std::mutex> ul(*(this->m));
 
         queue.push(value);
     }
@@ -31,7 +32,7 @@ class SafeQueue {
      */
     bool tryPop(T& value)
     {
-        std::unique_lock<std::mutex> ul(this->m, std::try_to_lock);
+        std::unique_lock<std::mutex> ul(*(this->m), std::try_to_lock);
 
         if (!ul) {
             return false;
@@ -45,5 +46,5 @@ class SafeQueue {
 
   private:
     std::queue<T> queue;
-    std::mutex m;
+    std::unique_ptr<std::mutex> m;
 };

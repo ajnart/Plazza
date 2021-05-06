@@ -31,7 +31,7 @@ class FoodStock {
      */
     FoodStock();
     FoodStock(FoodStock const& to_copy) = delete;
-    FoodStock(FoodStock&& to_move) = delete;
+    FoodStock(FoodStock&& to_move) = default;
 
     ~FoodStock() = default;
 

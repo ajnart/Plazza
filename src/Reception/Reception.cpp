@@ -22,7 +22,16 @@
 
 namespace Plazza
 {
-std::vector<std::string> Reception::split(const std::string& s, char block) noexcept
+Reception::Reception(float multiplier, unsigned int chefsNbr, float refill)
+{
+    this->multiplier = multiplier;
+    this->chefsNbr = chefsNbr;
+    this->refill = refill;
+    this->kitchens.emplace_back(Kitchen(chefsNbr, refill, multiplier));
+}
+
+std::vector<std::string> Reception::split(const std::string& s,
+                                          char block) noexcept
 {
     std::vector<std::string> tokens;
     std::string token;
@@ -62,7 +71,7 @@ PizzaCmd_t Reception::getCommandFromString(const std::string str)
         throw(PlazzaException("Invalid command. Type 'help' to view help."));
 
     bool isIn = false;
-    for (auto &i : {"S", "M", "L", "XL", "XXL"}) {
+    for (auto& i: {"S", "M", "L", "XL", "XXL"}) {
         if (i == parsed[1])
             isIn = true;
     }
@@ -71,12 +80,11 @@ PizzaCmd_t Reception::getCommandFromString(const std::string str)
     }
     try {
         command.type = PizzaType.at(parsed[0]);
-    command.number = std::stoi(parsed[2]);
+        command.number = std::stoi(parsed[2]);
     } catch (std::out_of_range) {
-        throw (PlazzaException("Unknown pizza type."));
-    } catch (std::invalid_argument){
-        throw (PlazzaException("Invalid number of pizza"));
-
+        throw(PlazzaException("Unknown pizza type."));
+    } catch (std::invalid_argument) {
+        throw(PlazzaException("Invalid number of pizza"));
     }
     return command;
 }
@@ -93,13 +101,39 @@ Action Reception::checkLine(std::string input) noexcept
     for (auto const& token: commands) {
         try {
             Commands.push_back(getCommandFromString(token));
-        } catch (PlazzaException &e) {
+        } catch (PlazzaException& e) {
             std::cout << e.what();
             Commands.clear();
             return Action::NONE;
         }
     }
     return Action::RUN;
+}
+
+bool Reception::assignToKitchen(PizzaCmd_t command)
+{
+    int best_index = 0;
+    int best_nbr = this->kitchens.front().getPizzaNbr();
+    std::list<Kitchen>::iterator best_it;
+
+
+    for (auto it = kitchens.begin(); it != kitchens.end(); it++) {
+        int tmp = it->getPizzaNbr();
+        if (tmp < best_nbr) {
+            best_nbr = tmp;
+            best_it = it;
+        }
+
+    }
+    return best_it->addPizza(command.type) ? true : false;
+}
+
+void Reception::assignToNewKitchen(PizzaCmd_t command)
+{
+    this->kitchens.emplace_back(
+        Kitchen(this->chefsNbr, this->refill, this->multiplier));
+    if (!this->kitchens.back().addPizza(command.type))
+        throw std::logic_error("Fatal error: New Kitchen is full at creation");
 }
 
 void Reception::manageCommands()
@@ -110,7 +144,9 @@ void Reception::manageCommands()
         for (auto i = command.begin(); i != command.end(); ++i)
             std::cout << *i << ' ';
 #endif
-
+        if (!this->assignToKitchen(command)) {
+            this->assignToNewKitchen(command);
+        }
     }
 }
 

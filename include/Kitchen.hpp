@@ -20,7 +20,7 @@ class Kitchen {
   public:
     Kitchen(int cookNb, int refillTime, int CookTimeMultiplier);
     Kitchen(Kitchen const& to_copy) = delete;
-    Kitchen(Kitchen&& to_move) = delete;
+    Kitchen(Kitchen&& to_move) = default;
 
     ~Kitchen()
     {

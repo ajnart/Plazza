@@ -14,6 +14,7 @@
 #include <iostream>
 #include <unordered_map>
 #include <map>
+#include <list>
 
 namespace Plazza
 {
@@ -50,13 +51,13 @@ struct PizzaCmd_t
 
 class Reception {
   public:
-    Reception() = default;
-    Reception(Reception const& to_copy) = default;
-    Reception(Reception&& to_move) = default;
+    Reception(float multiplier, unsigned int chefsNbr, float refill);
+    Reception(Reception const& to_copy) = delete;
+    Reception(Reception&& to_move) = delete;
 
     ~Reception() = default;
 
-    Reception& operator=(Reception const& to_copy) = default;
+    Reception& operator=(Reception const& to_copy) = delete;
 
     /*
      * entrypoint of the Reception
@@ -73,7 +74,6 @@ class Reception {
      */
     void printStatus() noexcept;
 
-    int setValue(int ac, char** av);
     /*
      * split the string s according to the delimitor, into a vector of string
      */
@@ -88,9 +88,23 @@ class Reception {
      * throw if any error happend
      */
     PizzaCmd_t getCommandFromString(const std::string str);
+    /*
+     * check for available kitchen to send the command
+     * loop over all kitchen to find the most suitable one
+     */
+    bool assignToKitchen(PizzaCmd_t command);
+    /*
+     * in case assignToKitchen fail, create a new kitchen, and assign it the
+     * command.
+     */
+    void assignToNewKitchen(PizzaCmd_t command);
 
     std::vector<PizzaCmd_t> Commands;
-    std::vector<Kitchen> kitchens;
+    std::list<Kitchen> kitchens;
+
+    float multiplier;
+    unsigned int chefsNbr;
+    float refill;
 };
 
 }

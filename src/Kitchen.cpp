@@ -47,7 +47,7 @@ int Kitchen::getPizzaNbr() noexcept
 
 bool Kitchen::addPizza(const Pizza& pizza) noexcept
 {
-    if (this->pizzaNb >= this->cookNb * 2)
+    if (this->pizzaNb >= this->cookNb)
         return false;
     this->Queue.push(pizza);
     this->pizzaNb += 1;
@@ -62,6 +62,7 @@ bool Kitchen::CookManager(attr attrs)
         if (!cook->isBusy() &&
             this->Stock.tryConsumeIngredients(std::get<1>(attrs))) {
             cook->bake(std::get<2>(attrs) * this->CookTimeMultiplier);
+            this->pizzaNb -= 1;
             return true;
         }
     }
