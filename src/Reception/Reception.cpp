@@ -38,7 +38,7 @@ bool Reception::cmdChecker(std::vector<std::string> command)
     for (int i = 0; i < 3; ++i) {
         if (i == 0) {
             for (int j = 0; j < 3; ++j) {
-                if (command[i] == _Pizzas[j].first)
+                if (command[i] == Pizzas[j].first)
                     return true;
             }
             throw(PlazzaException("Invalid pizza type."));
@@ -57,9 +57,9 @@ bool Reception::cmdChecker(std::vector<std::string> command)
     return false;
 }
 
-void Reception::printStatus() {
-    for (auto &i : kitchens)
-    {
+void Reception::printStatus()
+{
+    for (auto& i: kitchens) {
         i.status();
     }
 }
@@ -77,19 +77,29 @@ static void printHelp()
               << "regina XXL x2; fantasia M x3;margarita S x1\"" << std::endl;
 }
 
-bool Reception::checkLine()
+PizzaCmd_t Reception::getCommandFromString(const std::string str)
 {
-    if (_Line == "help") {
-        printHelp();
-        return false;
-    }
-    if (_Line == "status")
-    {
-        Reception::printStatus();
-        return false;
-    }
-    auto Split = split(_Line, ';');
-    for (auto const& token: Split) {
+    std::vector<std::string> parsed = this->split(str, ' ');
+    PizzaCmd_t command;
+
+    if (parsed.size() != 3)
+        throw(PlazzaException("Invalid command. Type 'help' to view help."));
+}
+
+Action Reception::checkLine(std::string input)
+{
+    if (input == "help")
+        return Action::HELP;
+    if (input == "status")
+        return Action::STATUS;
+    if (input == "exit")
+        return Action::EXIT;
+    auto commands = split(input, ';');
+    for (auto const& token: commands) {
+        try {
+            Commands.push_back(getCommandFromString(token));
+        }
+        /*
         auto command = split(token, ' ');
         command.erase(std::remove_if(command.begin(), command.end(),
                                      [](const std::string& str) {
@@ -98,11 +108,11 @@ bool Reception::checkLine()
                       command.end());
         if (command.size() != 3)
             throw(PlazzaException(
-                "Invalid arguments. Type 'help' to view help."));
+                "Invalid command. Type 'help' to view help."));
         cmdChecker(command);
-        _SplittedCmd.push_back(command);
+        SplittedCmd.push_back(command);*/
     }
-    return true;
+    return Action::RUN;
 }
 
 void Reception::makeCmd()
@@ -133,16 +143,31 @@ void Reception::makeCmd()
     _SplittedCmd.clear();
 }
 
-bool Reception::run()
+int Reception::run()
 {
+    std::string line;
+    Action action = Action::NONE;
     std::cout << "$> ";
-    while (getline(std::cin, _Line)) {
-        if (_Line == "exit") // HERE: Bonus 🚀
-            break;
+    while (getline(std::cin, line)) {
         try {
-            checkLine();
+            action = this->checkLine(line);
         } catch (PlazzaException& e) {
             std::cout << e.what() << std::endl;
+        }
+        switch (action) {
+            case Action::EXIT:
+                return 0;
+            case Action::HELP:
+                printHelp();
+                break;
+            case Action::STATUS:
+                this->printStatus();
+                break;
+            case Action::RUN:
+                this->makeCmd(line);
+                break;
+            default:
+                break;
         }
         makeCmd();
         // make algo with each elem of _Commands for (auto const &elem :

@@ -8,21 +8,36 @@
 #ifndef RECEPTION_HPP_
 #define RECEPTION_HPP_
 
+#include "Kitchen.hpp"
+#include "Pizza.hpp"
 #include <chrono>
 #include <iostream>
 #include <unordered_map>
 #include <vector>
-#include "Pizza.hpp"
-#include "Kitchen.hpp"
 
 namespace Plazza
 {
+static const std::vector<std::pair<std::string, Pizza>> Pizzas = {
+    {"regina", Pizza::Regina},
+    {"fantasia", Pizza::Fantasia},
+    {"margarita", Pizza::Margarita},
+    {"americana", Pizza::Americana},
+};
 enum class Size
 {
     S = 1,
     M = 2,
     L = 4,
     XL = 8,
+};
+
+enum Action
+{
+    NONE = 0,
+    HELP,
+    STATUS,
+    EXIT,
+    RUN,
 };
 
 const std::vector<std::pair<std::string, Size>> pizzaSizes = {
@@ -40,34 +55,49 @@ struct PizzaCmd_t
 };
 
 class Reception {
-  private:
-    float _TimeMultiplier;
-    unsigned int _CooksPerKitchen;
-    float _TimeStockRefill;
-    std::chrono::high_resolution_clock::time_point _Time;
-    std::string _Line;
-    std::vector<std::vector<std::string>> _SplittedCmd;
-    std::vector<PizzaCmd_t> _Commands;
-    std::vector<std::pair<std::string, Pizza>> _Pizzas = {
-        {"regina", Pizza::Regina},
-        {"fantasia", Pizza::Fantasia},
-        {"margarita", Pizza::Margarita},
-        {"americana", Pizza::Americana},
-    };
-    std::vector<Kitchen> kitchens;
-
   public:
     Reception() = default;
+    Reception(Reception const& to_copy) = default;
+    Reception(Reception&& to_move) = default;
+
     ~Reception() = default;
+
+    Reception& operator=(Reception const& to_copy) = default;
+
+    /*
+     * entrypoint of the Reception
+     */
+    int run() noexcept;
+
+  private:
+    /*
+     * read the input, and return the action to execute
+     */
+    Action checkLine(std::string command) noexcept;
+    /*
+     * print the status of kitchens
+     */
+    void printStatus() noexcept;
+
     int setValue(int ac, char** av);
-    bool run();
-    void printStatus();
-    bool checkLine();
-    std::vector<std::string> split(const std::string& s, char block);
+    /*
+     * split the string s according to the delimitor, into a vector of string
+     */
+    std::vector<std::string> split(const std::string& s,
+                                   char delimitor) noexcept;
     void makeCmd();
-    PizzaCmd_t getCommandFromString(const std::vector<std::string>& com);
+    /*
+     * parse the string str and return a command structure.
+     * throw if any error happend
+     */
+    PizzaCmd_t getCommandFromString(const std::string str);
     bool cmdChecker(std::vector<std::string> command);
+    std::chrono::high_resolution_clock::time_point Time;
+
+    std::vector<PizzaCmd_t> Commands;
+    std::vector<Kitchen> kitchens;
 };
+
 }
 
 #endif /* !RECEPTION_HPP_ */
