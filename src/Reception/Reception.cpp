@@ -35,7 +35,10 @@ std::vector<std::string> Reception::split(const std::string& s, char block) noex
 
 void Reception::printStatus() noexcept
 {
-    for (auto& i: kitchens) {
+    int idx = 1;
+    for (auto &i: kitchens) {
+        std::cout << "Kitchen #" << idx << std::endl;
+        idx++;
         i.status();
     }
 }
@@ -105,11 +108,7 @@ Action Reception::checkLine(std::string input) noexcept
 void Reception::manageCommands()
 {
     for (auto const& command: Commands) {
-#ifdef __DEBUG
-        std::cout << "- ";
-        for (auto i = command.begin(); i != command.end(); ++i)
-            std::cout << *i << ' ';
-#endif
+            // TODO: Handle commands
 
     }
 }

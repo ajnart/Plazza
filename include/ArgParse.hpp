@@ -12,7 +12,7 @@ struct params_t
 {
     float multiplier;
     unsigned int chefs_nbr;
-    float stock_refill_time;
+    unsigned int stock_refill_time;
 };
 
 class ArgParse {
