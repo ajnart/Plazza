@@ -22,7 +22,7 @@
 
 namespace Plazza
 {
-std::vector<std::string> Reception::split(const std::string& s, char block)
+std::vector<std::string> Reception::split(const std::string& s, char block) noexcept
 {
     std::vector<std::string> tokens;
     std::string token;
@@ -57,7 +57,7 @@ bool Reception::cmdChecker(std::vector<std::string> command)
     return false;
 }
 
-void Reception::printStatus()
+void Reception::printStatus() noexcept
 {
     for (auto& i: kitchens) {
         i.status();
@@ -84,9 +84,15 @@ PizzaCmd_t Reception::getCommandFromString(const std::string str)
 
     if (parsed.size() != 3)
         throw(PlazzaException("Invalid command. Type 'help' to view help."));
+
+    command.size = std::find_if(pizzaSizes.begin(), pizzaSizes.end(),
+                           [&command](const std::pair<std::string, int>& element) {
+                               return element.first == command.size;
+                           });
+    return command;
 }
 
-Action Reception::checkLine(std::string input)
+Action Reception::checkLine(std::string input) noexcept
 {
     if (input == "help")
         return Action::HELP;
@@ -143,7 +149,7 @@ void Reception::makeCmd()
     _SplittedCmd.clear();
 }
 
-int Reception::run()
+int Reception::run() noexcept
 {
     std::string line;
     Action action = Action::NONE;
