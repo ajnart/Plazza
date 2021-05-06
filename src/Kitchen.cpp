@@ -15,17 +15,21 @@
 
 namespace Plazza
 {
-Kitchen::Kitchen(int cookNb, int refillTime, int CookTimeMultiplier) :
-    cookNb(cookNb),
-    refillTime(refillTime),
-    CookTimeMultiplier(CookTimeMultiplier),
+Kitchen::Kitchen(float multiplier, unsigned int chefs_nbr,
+                 unsigned int stock_refill_time) :
+    cookNb(chefs_nbr),
+    refillTime(stock_refill_time),
+    CookTimeMultiplier(multiplier),
     t(&Kitchen::run, this),
-    Cooks(cookNb)
+    Cooks(chefs_nbr)
 {}
-
+Kitchen::~Kitchen()
+{
+    if (t.joinable())
+        t.join();
+}
 void Kitchen::status(void) noexcept
 {
-    std::cout << "Kitchen #" << this->id << std::endl;
     Plazza::Ingredients_t i = this->Stock.getIngredients();
     std::cout << "Ingredients:\n"
               << "D:" << i.Does << "\tT:" << i.Tomatoes << "\tG:" << i.Gruyere
@@ -78,17 +82,23 @@ attr getPizzaAttributes(const Pizza& pizza)
     if (attributes not_eq pizzas.end()) {
         return *attributes;
     }
-    throw(PlazzaException("Unknown Pizza."));
+    throw(PlazzaException("Unknown Pizza type."));
 }
 
 void Kitchen::run()
 {
+#ifdef __DEBUG
+        std::cout << "[DEBUG] Kitchen is running" << std::endl;
+#endif
     Pizza pizza;
     attr attributes = getPizzaAttributes(Pizza::None);
     while (this->running) {
         this->tryRefill();
         if (std::get<0>(attributes) == Pizza::None) {
             if (this->Queue.tryPop(pizza)) {
+#ifdef __DEBUG
+        std::cout << "[DEBUG] Kitchen received a pizza" << std::endl;
+#endif
                 attributes = getPizzaAttributes(pizza);
                 if (this->CookManager(attributes)) {
                     attributes = getPizzaAttributes(Pizza::None);
@@ -99,6 +109,7 @@ void Kitchen::run()
                 attributes = getPizzaAttributes(Pizza::None);
             }
         }
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
     }
 }
 
@@ -109,6 +120,9 @@ bool Kitchen::tryRefill() noexcept
 
     if (std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1) >=
         std::chrono::milliseconds(this->refillTime)) {
+#ifdef __DEBUG
+        std::cout << "[DEBUG] Refilling ingredients for kitchen" << std::endl;
+#endif
         t1 = std::chrono::high_resolution_clock::now();
         this->Stock.refill();
         return true;

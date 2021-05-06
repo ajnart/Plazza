@@ -27,7 +27,10 @@ Reception::Reception(float multiplier, unsigned int chefsNbr, float refill)
     this->multiplier = multiplier;
     this->chefsNbr = chefsNbr;
     this->refill = refill;
-    this->kitchens.emplace_back(Kitchen(chefsNbr, refill, multiplier));
+    this->kitchens.push_back(Kitchen(chefsNbr, refill, multiplier));
+#ifdef __DEBUG
+        std::cout << "[DEBUG] Reception has been created" << std::endl;
+#endif
 }
 
 std::vector<std::string> Reception::split(const std::string& s,
@@ -44,7 +47,10 @@ std::vector<std::string> Reception::split(const std::string& s,
 
 void Reception::printStatus() noexcept
 {
-    for (auto& i: kitchens) {
+    int idx = 1;
+    for (auto &i: kitchens) {
+        std::cout << "Kitchen #" << idx << std::endl;
+        idx++;
         i.status();
     }
 }
@@ -139,11 +145,11 @@ void Reception::assignToNewKitchen(PizzaCmd_t command)
 void Reception::manageCommands()
 {
     for (auto const& command: Commands) {
-#ifdef __DEBUG
-        std::cout << "- ";
-        for (auto i = command.begin(); i != command.end(); ++i)
-            std::cout << *i << ' ';
-#endif
+/* #ifdef __DEBUG */
+/*         std::cout << "- "; */
+/*         for (auto i = command.begin(); i != command.end(); ++i) */
+/*             std::cout << *i << ' '; */
+/* #endif */
         if (!this->assignToKitchen(command)) {
             this->assignToNewKitchen(command);
         }
@@ -152,6 +158,9 @@ void Reception::manageCommands()
 
 int Reception::run() noexcept
 {
+#ifdef __DEBUG
+        std::cout << "[DEBUG] Reception is now running" << std::endl;
+#endif
     std::string line;
     Action action = Action::NONE;
     std::cout << "$> ";

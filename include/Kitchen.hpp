@@ -18,14 +18,12 @@ namespace Plazza
 {
 class Kitchen {
   public:
-    Kitchen(int cookNb, int refillTime, int CookTimeMultiplier);
+    Kitchen(float multiplier, unsigned int chefs_nbr,
+            unsigned int stock_refill_time);
     Kitchen(Kitchen const& to_copy) = delete;
     Kitchen(Kitchen&& to_move) = default;
 
-    ~Kitchen()
-    {
-        t.join();
-    }
+    ~Kitchen();
 
     Kitchen& operator=(Kitchen const& to_copy) = delete;
 
@@ -42,17 +40,17 @@ class Kitchen {
      */
     bool addPizza(const Pizza& pizza) noexcept;
     void stop() noexcept { this->running = false; }
+    std::vector<Cook> Cooks;
+    void run();
 
   private:
     bool CookManager(std::tuple<Pizza, Ingredients_t, int>);
     /*
      * create a thread with given function, and self
      */
-    void run();
     /*
      * have a clock, and call for refill every x ms
      */
-    int id = 0; // Kitchen ID. > needed for status.
     bool tryRefill() noexcept;
     SafeQueue<Pizza> Queue;
     int pizzaNb = 0;
@@ -62,6 +60,5 @@ class Kitchen {
     const int CookTimeMultiplier;
     std::thread t;
     FoodStock Stock;
-    std::vector<Cook> Cooks;
 };
 } // namespace Plazza
