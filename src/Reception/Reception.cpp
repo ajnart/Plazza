@@ -33,30 +33,6 @@ std::vector<std::string> Reception::split(const std::string& s, char block) noex
     return tokens;
 }
 
-bool Reception::cmdChecker(std::vector<std::string> command)
-{
-    for (int i = 0; i < 3; ++i) {
-        if (i == 0) {
-            for (int j = 0; j < 3; ++j) {
-                if (command[i] == Pizzas[j].first)
-                    return true;
-            }
-            throw(PlazzaException("Invalid pizza type."));
-        } else if (i == 1) {
-            if (command[i] != "S" && command[i] != "M" && command[i] != "L" &&
-                command[i] != "XL" && command[i] != "XXL")
-                throw(PlazzaException(
-                    "Invalid pizza size. Valid sizes are [S/M/L/XL/XXL]"));
-            return true;
-        } else {
-            if (std::regex_match(command[i], std::regex("x[0-9]*")))
-                return true;
-            throw(PlazzaException("Invalid number of pizzas."));
-        }
-    }
-    return false;
-}
-
 void Reception::printStatus() noexcept
 {
     for (auto& i: kitchens) {
@@ -85,10 +61,23 @@ PizzaCmd_t Reception::getCommandFromString(const std::string str)
     if (parsed.size() != 3)
         throw(PlazzaException("Invalid command. Type 'help' to view help."));
 
-    command.size = std::find_if(pizzaSizes.begin(), pizzaSizes.end(),
-                           [&command](const std::pair<std::string, int>& element) {
-                               return element.first == command.size;
-                           });
+    bool isIn = false;
+    for (auto &i : {"S", "M", "L", "XL", "XXL"}) {
+        if (i == parsed[1])
+            isIn = true;
+    }
+    if (!isIn) {
+        throw(PlazzaException("Unknown pizza size."));
+    }
+    try {
+        command.type = PizzaType.at(parsed[0]);
+    command.number = std::stoi(parsed[2]);
+    } catch (std::out_of_range) {
+        throw (PlazzaException("Unknown pizza type."));
+    } catch (std::invalid_argument){
+        throw (PlazzaException("Invalid number of pizza"));
+
+    }
     return command;
 }
 
@@ -104,49 +93,25 @@ Action Reception::checkLine(std::string input) noexcept
     for (auto const& token: commands) {
         try {
             Commands.push_back(getCommandFromString(token));
+        } catch (PlazzaException &e) {
+            std::cout << e.what();
+            Commands.clear();
+            return Action::NONE;
         }
-        /*
-        auto command = split(token, ' ');
-        command.erase(std::remove_if(command.begin(), command.end(),
-                                     [](const std::string& str) {
-                                         return str.empty();
-                                     }),
-                      command.end());
-        if (command.size() != 3)
-            throw(PlazzaException(
-                "Invalid command. Type 'help' to view help."));
-        cmdChecker(command);
-        SplittedCmd.push_back(command);*/
     }
     return Action::RUN;
 }
 
-void Reception::makeCmd()
+void Reception::manageCommands()
 {
-    for (auto const& command: _SplittedCmd) {
+    for (auto const& command: Commands) {
 #ifdef __DEBUG
         std::cout << "- ";
         for (auto i = command.begin(); i != command.end(); ++i)
             std::cout << *i << ' ';
 #endif
-        auto newCommand = PizzaCmd_t();
-        for (int i = 0; i < 3; ++i) {
-            if (i == 0) {
-                for (auto const& elem: _Pizzas) {
-                    if (elem.first == command[0])
-                        newCommand.type = elem.second;
-                }
-            } else if (i == 1) {
-                for (auto const& elem: pizzaSizes) {
-                    if (elem.first == command[1])
-                        newCommand.size = elem.second;
-                }
-            } else
-                newCommand.number = std::stoi(&(command[i].c_str()[1]));
-        }
-        _Commands.push_back(newCommand);
+
     }
-    _SplittedCmd.clear();
 }
 
 int Reception::run() noexcept
@@ -170,16 +135,16 @@ int Reception::run() noexcept
                 this->printStatus();
                 break;
             case Action::RUN:
-                this->makeCmd(line);
+                this->manageCommands();
+                Commands.clear();
                 break;
             default:
                 break;
         }
-        makeCmd();
         // make algo with each elem of _Commands for (auto const &elem :
         // commands)
         std::cout << "\n$> ";
     }
-    return true;
+    return 0;
 }
 } // namespace Plazza
