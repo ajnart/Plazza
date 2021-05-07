@@ -15,19 +15,18 @@
 
 namespace Plazza
 {
-Kitchen::Kitchen(float multiplier, unsigned int chefs_nbr,
-                 unsigned int stock_refill_time) :
-    cookNb(chefs_nbr),
-    refillTime(stock_refill_time),
-    CookTimeMultiplier(multiplier),
-    t(&Kitchen::run, this),
-    Cooks(chefs_nbr)
+Kitchen::Kitchen(params_t params, int id) :
+    write(id, NamedPipe::WRITE),
+    read(id, NamedPipe::READ),
+    cookNb(params.chefs_nbr),
+    refillTime(params.stock_refill_time),
+    CookTimeMultiplier(params.multiplier),
+    Cooks(params.chefs_nbr)
 {}
+
 Kitchen::~Kitchen()
-{
-    if (t.joinable())
-        t.join();
-}
+{}
+
 void Kitchen::status(void) noexcept
 {
     Plazza::Ingredients_t i = this->Stock.getIngredients();
@@ -44,19 +43,20 @@ void Kitchen::status(void) noexcept
     std::cout << std::endl;
 }
 
-int Kitchen::getPizzaNbr() noexcept
+void Kitchen::getPizzaNbr() noexcept
 {
-    return this->pizzaNb;
+    this->write.send(std::to_string(this->pizzaNb));
 }
 
-bool Kitchen::addPizza(const Pizza& pizza) noexcept
-{
-    if (this->pizzaNb >= this->cookNb)
-        return false;
-    this->Queue.push(pizza);
-    this->pizzaNb += 1;
-    return true;
-}
+/* bool Kitchen::addPizza(std::string pizzaName) noexcept */
+/* { */
+/*     Pizza pizza = PizzaType.at(pizzaName); */
+/*     if (this->pizzaNb >= this->cookNb) */
+/*         return false; */
+/*     this->queue.push(pizza); */
+/*     this->pizzaNb += 1; */
+/*     return true; */
+/* } */
 
 using attr = std::tuple<Pizza, Ingredients_t, int>;
 
@@ -85,29 +85,42 @@ attr getPizzaAttributes(const Pizza& pizza)
     throw(PlazzaException("Unknown Pizza type."));
 }
 
+void Kitchen::handlePizza(std::string name)
+{
+    if (this->pizzaNb > this->cookNb) {
+        this->write.send("FALSE\n");
+        return;
+    }
+    Pizza pizza = PizzaType.at(name);
+    this->queue.push(pizza);
+     this->pizzaNb += 1;
+    attr attributes = getPizzaAttributes(pizza);
+}
+
 void Kitchen::run()
 {
-#ifdef __DEBUG
-        std::cout << "[DEBUG] Kitchen is running" << std::endl;
-#endif
-    Pizza pizza;
-    attr attributes = getPizzaAttributes(Pizza::None);
-    while (this->running) {
+/* #ifdef __DEBUG */
+/*         std::cout << "[DEBUG] Kitchen is running" << std::endl; */
+/* #endif */
+    std::string commandLine;
+
+    while (1) {
         this->tryRefill();
-        if (std::get<0>(attributes) == Pizza::None) {
-            if (this->Queue.tryPop(pizza)) {
-#ifdef __DEBUG
-        std::cout << "[DEBUG] Kitchen received a pizza" << std::endl;
-#endif
-                attributes = getPizzaAttributes(pizza);
-                if (this->CookManager(attributes)) {
-                    attributes = getPizzaAttributes(Pizza::None);
-                }
-            }
-        } else {
+        if (this->read.tryGet(commandLine)) {
+            if (commandLine == "STATUS")
+                this->status();
+            else if (commandLine == "PIZZANBR")
+                this->getPizzaNbr();
+            else if (commandLine == "STOP")
+                return;
+            else
+                this->handlePizza(commandLine);
+            Pizza tmp = this->queue.front();
+            attr attributes = getPizzaAttributes(tmp);
             if (this->CookManager(attributes)) {
-                attributes = getPizzaAttributes(Pizza::None);
+                this->queue.pop();
             }
+
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(20));
     }

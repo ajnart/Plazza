@@ -32,9 +32,7 @@ NAME	=	plazza
 
 CPPFLAGS	+=	-I./include
 CXXFLAGS 	+= -O2 -W -Wall -Wextra
-LDLIBS 		+= -lpthread
-
-LDLIBS		=	-lpthread
+LDLIBS 		+= -lpthread -lrt
 
 ifneq (,$(findstring debug,$(MAKECMDGOALS)))
 	CPPFLAGS += -g -D__DEBUG

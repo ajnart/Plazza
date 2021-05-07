@@ -6,21 +6,29 @@
 */
 
 #pragma once
+#include <iostream>
+#include <memory>
 #include <mutex>
 #include <queue>
-#include <memory>
-#include <iostream>
 
 template <typename T>
 class SafeQueue {
   public:
-    SafeQueue() = default;
+    SafeQueue() : m(std::make_unique<std::mutex>()){
+        std::cout << m.get() << std::endl;
+    };
     SafeQueue(SafeQueue const& to_copy) = delete;
-    SafeQueue(SafeQueue&& to_move) = default;
+    SafeQueue(SafeQueue&& to_move) :
+        queue(std::move(to_move.queue)), m(std::move(to_move.m)){};
 
     ~SafeQueue() = default;
 
     SafeQueue& operator=(SafeQueue const& to_copy) = delete;
+    SafeQueue& operator=(SafeQueue&& to_move)
+    {
+        this->queue = std::move(to_move.queue);
+        this->m = std::move(to_move.m);
+    }
 
     void push(T value)
     {
@@ -33,17 +41,20 @@ class SafeQueue {
      */
     bool tryPop(T& value)
     {
-        std::unique_lock<std::mutex> ul(*(this->m), std::try_to_lock);
+        std::cout << m.get() << std::endl;
+        if (this->m.get() == nullptr)
+            std::cout << "bite" << std::endl;
+        std::unique_lock<std::mutex> lock(*(this->m), std::defer_lock);
 
-        if (!ul) {
+        if (!lock.try_lock()) {
 #ifdef __DEBUG
-        std::cout << "[DEBUG] couldnt lock the queue" << std::endl;
+            std::cout << "[DEBUG] couldnt lock the queue" << std::endl;
 #endif
             return false;
         }
         if (this->queue.empty()) {
 #ifdef __DEBUG
-        std::cout << "[DEBUG] queue was empty" << std::endl;
+            std::cout << "[DEBUG] queue was empty" << std::endl;
 #endif
             return false;
         }

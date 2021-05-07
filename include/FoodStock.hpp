@@ -36,6 +36,7 @@ class FoodStock {
     ~FoodStock() = default;
 
     FoodStock& operator=(FoodStock const& to_copy) = delete;
+    FoodStock& operator=(FoodStock && to_move) = default;
 
     bool tryConsumeIngredients(const Ingredients_t& i);
     /*

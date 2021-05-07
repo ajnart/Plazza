@@ -8,22 +8,16 @@
 #ifndef RECEPTION_HPP_
 #define RECEPTION_HPP_
 
-#include "Kitchen.hpp"
+#include "MultiThread/KitchenIPC.hpp"
 #include "Pizza.hpp"
 #include <chrono>
 #include <iostream>
 #include <unordered_map>
 #include <map>
-#include <list>
+#include <vector>
 
 namespace Plazza
 {
-static const std::map<std::string, Pizza> PizzaType = {
-    {"regina", Pizza::Regina},
-    {"fantasia", Pizza::Fantasia},
-    {"margarita", Pizza::Margarita},
-    {"americana", Pizza::Americana},
-};
 
 enum PizzaSize
 {
@@ -45,13 +39,13 @@ enum Action
 
 struct PizzaCmd_t
 {
-    Pizza type;
+    std::string type;
     int number;
 };
 
 class Reception {
   public:
-    Reception(float multiplier, unsigned int chefsNbr, float refill);
+    Reception(params_t param);
     Reception(Reception const& to_copy) = delete;
     Reception(Reception&& to_move) = delete;
 
@@ -100,11 +94,9 @@ class Reception {
     void assignToNewKitchen(PizzaCmd_t command);
 
     std::vector<PizzaCmd_t> Commands;
-    std::list<Kitchen> kitchens;
+    std::vector<KitchenIPC> kitchens;
 
-    float multiplier;
-    unsigned int chefsNbr;
-    float refill;
+    params_t params;
 };
 
 }

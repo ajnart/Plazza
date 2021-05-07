@@ -5,7 +5,7 @@
 ** Reception
 */
 
-#include "Reception/Reception.hpp"
+#include "Reception.hpp"
 
 #include <string.h>
 
@@ -22,12 +22,10 @@
 
 namespace Plazza
 {
-Reception::Reception(float multiplier, unsigned int chefsNbr, float refill)
+Reception::Reception(params_t params)
 {
-    this->multiplier = multiplier;
-    this->chefsNbr = chefsNbr;
-    this->refill = refill;
-    this->kitchens.push_back(Kitchen(chefsNbr, refill, multiplier));
+    this->params = params;
+    this->kitchens.push_back(KitchenIPC(params, 0));
 #ifdef __DEBUG
         std::cout << "[DEBUG] Reception has been created" << std::endl;
 #endif
@@ -51,7 +49,7 @@ void Reception::printStatus() noexcept
     for (auto &i: kitchens) {
         std::cout << "Kitchen #" << idx << std::endl;
         idx++;
-        i.status();
+        i.printStatus();
     }
 }
 
@@ -85,7 +83,7 @@ PizzaCmd_t Reception::getCommandFromString(const std::string str)
         throw(PlazzaException("Unknown pizza size."));
     }
     try {
-        command.type = PizzaType.at(parsed[0]);
+        command.type = parsed[0]; //PizzaType.at(parsed[0]);
         command.number = std::stoi(parsed[2]);
     } catch (std::out_of_range) {
         throw(PlazzaException("Unknown pizza type."));
@@ -119,25 +117,22 @@ Action Reception::checkLine(std::string input) noexcept
 bool Reception::assignToKitchen(PizzaCmd_t command)
 {
     int best_index = 0;
-    int best_nbr = this->kitchens.front().getPizzaNbr();
-    std::list<Kitchen>::iterator best_it;
+    int best_nbr = this->kitchens[0].getPizzaNbr();
 
-
-    for (auto it = kitchens.begin(); it != kitchens.end(); it++) {
-        int tmp = it->getPizzaNbr();
+    for (int i = 0; i < this->kitchens.size(); i++) {
+        int tmp = this->kitchens[0].getPizzaNbr();
         if (tmp < best_nbr) {
             best_nbr = tmp;
-            best_it = it;
+            best_index = i;
         }
-
     }
-    return best_it->addPizza(command.type) ? true : false;
+    return this->kitchens[best_nbr].addPizza(command.type);
 }
 
 void Reception::assignToNewKitchen(PizzaCmd_t command)
 {
-    this->kitchens.emplace_back(
-        Kitchen(this->chefsNbr, this->refill, this->multiplier));
+    this->kitchens.push_back(
+        KitchenIPC(this->params, this->kitchens.size()));
     if (!this->kitchens.back().addPizza(command.type))
         throw std::logic_error("Fatal error: New Kitchen is full at creation");
 }

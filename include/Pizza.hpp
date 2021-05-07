@@ -10,6 +10,7 @@
 #include <array>
 #include <string>
 #include <utility>
+#include <map>
 
 #include "FoodStock.hpp"
 
@@ -32,6 +33,13 @@ enum class Pizza
 // int Eggplant = 0;
 // int GoatCheese = 0;
 // int ChiefLove = 0;
+//
+static const std::map<std::string, Pizza> PizzaType = {
+    {"regina", Pizza::Regina},
+    {"fantasia", Pizza::Fantasia},
+    {"margarita", Pizza::Margarita},
+    {"americana", Pizza::Americana},
+};
 
 static const std::array<std::tuple<Pizza, Ingredients_t, int>, 5> pizzas = {
     std::tuple<Pizza, Ingredients_t, int>(Pizza::None, Ingredients_t{}, 0),
