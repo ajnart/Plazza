@@ -4,3 +4,4 @@ plazza
 tags
 .cache
 *.gc*
+vgcore*

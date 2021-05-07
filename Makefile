@@ -72,6 +72,7 @@ $(BUILD_DIR)%/.:
 clean:
 	@rm -rfv $(shell find $(BUILD_DIR) -name "*.o")
 	@rm -rfv $(shell find $(BUILD_DIR) -name "*.d")
+	@rm -rfv $(shell find -name "vgcore.*")
 
 debug:: clean
 debug:: all

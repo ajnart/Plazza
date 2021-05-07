@@ -16,13 +16,18 @@
 namespace Plazza
 {
 Kitchen::Kitchen(params_t params, int id) :
-    write(id, NamedPipe::WRITE),
-    read(id, NamedPipe::READ),
+    write(id, NamedPipe::WRITE, false),
+    read(id, NamedPipe::READ, false),
     cookNb(params.chefs_nbr),
     refillTime(params.stock_refill_time),
     CookTimeMultiplier(params.multiplier),
     Cooks(params.chefs_nbr)
-{}
+{
+    this->id = id;
+#ifdef __DEBUG
+    std::cout << "[DEBUG] kitchen " << id << " have been created!" << std::endl;
+#endif
+}
 
 Kitchen::~Kitchen()
 {}
@@ -85,7 +90,7 @@ attr getPizzaAttributes(const Pizza& pizza)
     throw(PlazzaException("Unknown Pizza type."));
 }
 
-void Kitchen::handlePizza(std::string name)
+void Kitchen::handlePizza(const std::string& name)
 {
     if (this->pizzaNb > this->cookNb) {
         this->write.send("FALSE\n");
@@ -99,14 +104,17 @@ void Kitchen::handlePizza(std::string name)
 
 void Kitchen::run()
 {
-/* #ifdef __DEBUG */
-/*         std::cout << "[DEBUG] Kitchen is running" << std::endl; */
-/* #endif */
     std::string commandLine;
+#ifdef __DEBUG
+    std::cout << "[DEBUG] kitchen " << id << " is running!" << std::endl;
+#endif
 
     while (1) {
         this->tryRefill();
         if (this->read.tryGet(commandLine)) {
+#ifdef __DEBUG
+    std::cout << "[DEBUG] kitchen " << id << ": flushed command!" << std::endl;
+#endif
             if (commandLine == "STATUS")
                 this->status();
             else if (commandLine == "PIZZANBR")
@@ -122,7 +130,7 @@ void Kitchen::run()
             }
 
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(20));
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
 }
 
@@ -133,9 +141,9 @@ bool Kitchen::tryRefill() noexcept
 
     if (std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1) >=
         std::chrono::milliseconds(this->refillTime)) {
-#ifdef __DEBUG
-        std::cout << "[DEBUG] Refilling ingredients for kitchen" << std::endl;
-#endif
+/* #ifdef __DEBUG */
+/*         std::cout << "[DEBUG] Refilling ingredients for kitchen" << std::endl; */
+/* #endif */
         t1 = std::chrono::high_resolution_clock::now();
         this->Stock.refill();
         return true;

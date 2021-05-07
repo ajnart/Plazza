@@ -16,12 +16,15 @@ namespace Plazza{
 class KitchenIPC {
   public:
     KitchenIPC(params_t params, int id)
-    : write(id, NamedPipe::READ),
-      read(id, NamedPipe::READ),
+    : write(id, NamedPipe::WRITE, true),
+      read(id, NamedPipe::READ, true),
       kitchen(params, id)
     {
+#ifdef __DEBUG
+        std::cout << "[DEBUG] Creating a Kitchen IPC with id " << id << std::endl;
+#endif
         this->id = id;
-        int pid = Fork::fork();
+        int pid = Fork::plazzaFork();
         if (pid == 0) {
             this->kitchen.run();
             exit(0);

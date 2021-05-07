@@ -48,7 +48,7 @@ class Kitchen {
      * read pizza name from [name] and try to save it in the queue. Send TRUE if
      * the kitchen can handle the command, FALSE otherwise.
      */
-    void handlePizza(std::string name);
+    void handlePizza(const std::string& name);
 
     /* void stop() noexcept */
     /* { */
@@ -72,6 +72,7 @@ class Kitchen {
     const int refillTime;
     const int CookTimeMultiplier;
     NamedPipe write;
+    int id;
     NamedPipe read;
     std::queue<Pizza> queue;
     // std::thread t;

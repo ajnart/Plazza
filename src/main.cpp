@@ -10,6 +10,7 @@
 
 #include "ArgParse.hpp"
 #include "PlazzaException.hpp"
+#include "Reception.hpp"
 
 namespace Plazza
 {
@@ -33,5 +34,6 @@ int main(int ac, char** av)
         return 84;
     }
 
-    return Plazza::plazza(params);
+    Plazza::Reception reception(params);
+    return reception.run();
 }

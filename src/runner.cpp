@@ -12,8 +12,6 @@ namespace Plazza
 {
 int plazza(params_t params)
 {
-    Reception reception(params);
-    return reception.run();
 
     /* Plazza::Kitchen k{params.multiplier, params.chefs_nbr,
      * params.stock_refill_time}; */
