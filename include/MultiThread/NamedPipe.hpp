@@ -81,7 +81,7 @@ class NamedPipe {
     void send(std::string msg)
     {
 #ifdef __DEBUG
-        std::cout << "sending " << msg << " to " << this->fifo << std::endl;
+        std::cout << "sending " << msg << " (" << msg.size() <<") to " << this->fifo << std::endl;
 #endif
         // this->write.write(msg.data(), msg.size());
         /* write << msg; */
@@ -89,8 +89,8 @@ class NamedPipe {
     }
     std::string get()
     {
-        char buf[64];
-        read(readfd, buf, 64);
+        char buf[10] = "\0\0\0\0\0\0\0\0\0";
+        read(readfd, buf, 9);
         /* getline(this->read, msg); */
 #ifdef __DEBUG
         std::cout << "got [" << buf << "] from " << this->fifo << std::endl;
