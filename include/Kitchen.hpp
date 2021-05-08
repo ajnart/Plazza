@@ -71,9 +71,9 @@ class Kitchen {
     const int cookNb = 0;
     const int refillTime;
     const int CookTimeMultiplier;
-    NamedPipe write;
     int id;
     NamedPipe read;
+    NamedPipe write;
     std::queue<Pizza> queue;
     // std::thread t;
     FoodStock Stock;

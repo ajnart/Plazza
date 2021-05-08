@@ -16,8 +16,6 @@
 namespace Plazza
 {
 Kitchen::Kitchen(params_t params, int id) :
-    write(id, NamedPipe::WRITE, false),
-    read(id, NamedPipe::READ, false),
     cookNb(params.chefs_nbr),
     refillTime(params.stock_refill_time),
     CookTimeMultiplier(params.multiplier),
@@ -98,7 +96,7 @@ void Kitchen::handlePizza(const std::string& name)
     }
     Pizza pizza = PizzaType.at(name);
     this->queue.push(pizza);
-     this->pizzaNb += 1;
+    this->pizzaNb += 1;
     attr attributes = getPizzaAttributes(pizza);
 }
 
@@ -109,26 +107,29 @@ void Kitchen::run()
     std::cout << "[DEBUG] kitchen " << id << " is running!" << std::endl;
 #endif
 
+    this->write.setPipe(id, NamedPipe::WRITE, false);
+    this->read.setPipe(id, NamedPipe::READ, false);
     while (1) {
         this->tryRefill();
+        /* commandLine = this->read.get(); */
         if (this->read.tryGet(commandLine)) {
 #ifdef __DEBUG
-    std::cout << "[DEBUG] kitchen " << id << ": flushed command!" << std::endl;
+        std::cout << "[DEBUG] kitchen " << id << ": flushed command!"
+                  << std::endl;
 #endif
-            if (commandLine == "STATUS")
-                this->status();
-            else if (commandLine == "PIZZANBR")
-                this->getPizzaNbr();
-            else if (commandLine == "STOP")
-                return;
-            else
-                this->handlePizza(commandLine);
-            Pizza tmp = this->queue.front();
-            attr attributes = getPizzaAttributes(tmp);
-            if (this->CookManager(attributes)) {
-                this->queue.pop();
-            }
-
+        if (commandLine == "STATUS")
+            this->status();
+        else if (commandLine == "PIZZANBR")
+            this->getPizzaNbr();
+        else if (commandLine == "STOP")
+            return;
+        else
+            this->handlePizza(commandLine);
+        Pizza tmp = this->queue.front();
+        attr attributes = getPizzaAttributes(tmp);
+        if (this->CookManager(attributes)) {
+            this->queue.pop();
+        }
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
@@ -141,9 +142,10 @@ bool Kitchen::tryRefill() noexcept
 
     if (std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1) >=
         std::chrono::milliseconds(this->refillTime)) {
-/* #ifdef __DEBUG */
-/*         std::cout << "[DEBUG] Refilling ingredients for kitchen" << std::endl; */
-/* #endif */
+        /* #ifdef __DEBUG */
+        /*         std::cout << "[DEBUG] Refilling ingredients for kitchen" <<
+         * std::endl; */
+        /* #endif */
         t1 = std::chrono::high_resolution_clock::now();
         this->Stock.refill();
         return true;
