@@ -33,8 +33,6 @@ class NamedPipe {
     {
         close(writefd);
         close(readfd);
-        /* this->write.close(); */
-        /* this->read.close(); */
         remove(this->fifo.data());
     }
     void initPipe(int id, Type_t type, bool parent)
@@ -48,7 +46,7 @@ class NamedPipe {
                                         : (type == READ ? "1" : "0"));
         if (parent) {
 #ifdef __DEBUG
-        std::cout << "Creating " << this->fifo << std::endl;
+            std::cout << "Creating " << this->fifo << std::endl;
 #endif
             remove(this->fifo.data());
             /* umask(0); */
@@ -61,6 +59,7 @@ class NamedPipe {
     {
         if (this->type == READ) {
             std::cout << "openning fifo for reading: " << this->fifo << "\n";
+
             readfd = open(fifo.data(), O_RDONLY);
             if (readfd < 0)
                 throw(Plazza::PlazzaException("fuck read"));

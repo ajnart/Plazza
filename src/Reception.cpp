@@ -25,7 +25,7 @@ namespace Plazza
 Reception::Reception(params_t params)
 {
     this->params = params;
-    this->kitchens.push_back(KitchenIPC(params, 0));
+    this->kitchens.emplace_back(params, 0);
 #ifdef __DEBUG
         std::cout << "[DEBUG] Reception has been created" << std::endl;
 #endif
@@ -183,6 +183,7 @@ int Reception::run() noexcept
         }
         // make algo with each elem of _Commands for (auto const &elem :
         // commands)
+        sleep(1);
         std::cout << "\n$> ";
     }
     return 0;

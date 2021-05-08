@@ -114,10 +114,11 @@ void Kitchen::run()
     while (1) {
         this->tryRefill();
         /* commandLine = this->read.get(); */
-        if (this->read.tryGet(commandLine)) {
+        commandLine = this->read.get();
 #ifdef __DEBUG
-        std::cout << "[DEBUG] kitchen " << id << ": flushed command!"
-                  << std::endl;
+                          std::cout
+                      << "[DEBUG] kitchen " << id << ": flushed command!"
+                      << std::endl;
 #endif
         if (commandLine == "STATUS")
             this->status();
@@ -131,7 +132,6 @@ void Kitchen::run()
         attr attributes = getPizzaAttributes(tmp);
         if (this->CookManager(attributes)) {
             this->queue.pop();
-        }
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
