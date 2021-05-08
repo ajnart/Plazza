@@ -107,8 +107,10 @@ void Kitchen::run()
     std::cout << "[DEBUG] kitchen " << id << " is running!" << std::endl;
 #endif
 
-    this->write.setPipe(id, NamedPipe::WRITE, false);
-    this->read.setPipe(id, NamedPipe::READ, false);
+    this->read.initPipe(id, NamedPipe::READ, false);
+    this->write.initPipe(id, NamedPipe::WRITE, false);
+    this->write.openPipe();
+    this->read.openPipe();
     while (1) {
         this->tryRefill();
         /* commandLine = this->read.get(); */

@@ -37,24 +37,44 @@ class NamedPipe {
         /* this->read.close(); */
         remove(this->fifo.data());
     }
-    void setPipe(int id, Type_t type, bool parent)
+    void initPipe(int id, Type_t type, bool parent)
     {
-        this->parent = parent;
         std::cout << (parent ? "PARENT: " : "CHILD: ");
-        std::cout << (type == WRITE ? "WRITE: " : "READ: ");
+        std::cout << (type == WRITE ? "WRITE: \n" : "READ: \n");
         this->type = type;
+        this->parent = parent;
         this->fifo = "fifo_" + std::to_string(id) +
                      std::string(parent ? (type == READ ? "0" : "1")
                                         : (type == READ ? "1" : "0"));
         if (parent) {
+#ifdef __DEBUG
+        std::cout << "Creating " << this->fifo << std::endl;
+#endif
             remove(this->fifo.data());
             /* umask(0); */
             /* if (mknod(this->fifo.data(), 0666|S_IFIFO, 0) == -1) */
             /*     throw (Plazza::PlazzaException("pute")); */
             mkfifo(this->fifo.data(), 0667);
         }
-        this->openPipe();
-    };
+    }
+    void openPipe()
+    {
+        if (this->type == READ) {
+            std::cout << "openning fifo for reading: " << this->fifo << "\n";
+            readfd = open(fifo.data(), O_RDONLY);
+            if (readfd < 0)
+                throw(Plazza::PlazzaException("fuck read"));
+            std::cout << "ok for " << (parent ? "PARENT" : "CHILD")
+                      << " reading pipe\n";
+        } else {
+            std::cout << "openning fifo for writing: [" << this->fifo << "]\n";
+            writefd = open(fifo.data(), O_WRONLY);
+            if (writefd < 0)
+                throw(Plazza::PlazzaException("fuck write"));
+            std::cout << "ok for " << (parent ? "PARENT" : "CHILD")
+                      << " writing pipe\n";
+        }
+    }
 
     NamedPipe& operator=(NamedPipe const& to_copy) = delete;
     NamedPipe& operator=(NamedPipe&& to_move) = default;
@@ -89,7 +109,7 @@ class NamedPipe {
         char c = 0;
         save.clear();
         do {
-                read(readfd, &c, 1);
+            read(readfd, &c, 1);
             /* nbRead = this->read.readsome(&c, 1); */
             if (nbRead == 1) {
 #ifdef __DEBUG
@@ -114,21 +134,5 @@ class NamedPipe {
     int readfd;
     Type_t type;
     std::string fifo;
-    void openPipe()
-    {
-        if (this->type == READ) {
-            std::cout << "openning fifo for reading: " << this->fifo << "\n";
-            readfd = open(fifo.data(), O_RDONLY);
-            if (readfd < 0)
-                throw(Plazza::PlazzaException("fuck read"));
-            std::cout << "ok for " << (parent ? "PARENT" : "CHILD") << " reading pipe\n";
-        } else {
-            std::cout << "openning fifo for writing: [" << this->fifo << "]\n";
-            writefd = open(fifo.data(), O_WRONLY);
-            if (writefd < 0)
-                throw(Plazza::PlazzaException("fuck write"));
-            std::cout << "ok for " << (parent ? "PARENT" : "CHILD") << " writing pipe\n";
-        }
-    }
 };
 

@@ -26,13 +26,15 @@ class KitchenIPC {
                   << std::endl;
 #endif
         this->id = id;
+        this->read.initPipe(id, NamedPipe::READ, true);
+        this->write.initPipe(id, NamedPipe::WRITE, true);
         int pid = Fork::plazzaFork();
         if (pid == 0) {
             this->kitchen.run();
             exit(0);
         }
-        this->read.setPipe(id, NamedPipe::READ, true);
-        this->write.setPipe(id, NamedPipe::WRITE, true);
+        this->read.openPipe();
+        this->write.openPipe();
     }
     KitchenIPC(KitchenIPC const& to_copy) = delete;
     KitchenIPC(KitchenIPC&& to_move) = default;
