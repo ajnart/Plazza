@@ -84,7 +84,7 @@ PizzaCmd_t Reception::getCommandFromString(const std::string str)
     }
     try {
         command.type = parsed[0]; //PizzaType.at(parsed[0]);
-        command.number = std::stoi(parsed[2]);
+        command.number = std::stoi(parsed[2].substr(1));
     } catch (std::out_of_range) {
         throw(PlazzaException("Unknown pizza type."));
     } catch (std::invalid_argument) {
