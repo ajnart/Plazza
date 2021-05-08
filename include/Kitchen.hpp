@@ -33,6 +33,7 @@ class Kitchen {
      * main function of the kitchen, the one to call after fork()
      */
     void run();
+    void stop();
 
   private:
     /*
@@ -72,6 +73,7 @@ class Kitchen {
     const int refillTime;
     const int CookTimeMultiplier;
     int id;
+    bool running = true;
     NamedPipe read;
     NamedPipe write;
     std::queue<Pizza> queue;

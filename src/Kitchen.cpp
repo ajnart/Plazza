@@ -100,6 +100,11 @@ void Kitchen::handlePizza(const std::string& name)
     attr attributes = getPizzaAttributes(pizza);
 }
 
+void Kitchen::stop()
+{
+    running = false;
+}
+
 void Kitchen::run()
 {
     std::string commandLine;
@@ -111,7 +116,7 @@ void Kitchen::run()
     this->write.initPipe(id, NamedPipe::WRITE, false);
     this->write.openPipe();
     this->read.openPipe();
-    while (1) {
+    while (this->running) {
         this->tryRefill();
         /* commandLine = this->read.get(); */
         commandLine = this->read.get();
