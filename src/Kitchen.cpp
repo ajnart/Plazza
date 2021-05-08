@@ -91,9 +91,10 @@ attr getPizzaAttributes(const Pizza& pizza)
 void Kitchen::handlePizza(const std::string& name)
 {
     if (this->pizzaNb > this->cookNb) {
-        this->write.send("FALSE\n");
+        this->write.send("FALSE");
         return;
     }
+    this->write.send("TRUE");
     Pizza pizza = PizzaType.at(name);
     this->queue.push(pizza);
     this->pizzaNb += 1;
@@ -132,10 +133,12 @@ void Kitchen::run()
             return;
         else
             this->handlePizza(commandLine);
-        Pizza tmp = this->queue.front();
-        attr attributes = getPizzaAttributes(tmp);
-        if (this->CookManager(attributes)) {
-            this->queue.pop();
+        if (!queue.empty()) {
+            Pizza tmp = this->queue.front();
+            attr attributes = getPizzaAttributes(tmp);
+            if (this->CookManager(attributes)) {
+                this->queue.pop();
+            }
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }

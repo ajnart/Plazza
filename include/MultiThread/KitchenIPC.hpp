@@ -46,11 +46,11 @@ class KitchenIPC {
 
     void printStatus()
     {
-        this->write.send("STATUS");
+        this->write.send("STATUS\0");
     }
     int getPizzaNbr()
     {
-        this->write.send("PIZZANBR");
+        this->write.send("PIZZANBR\0");
         return std::stoi(this->read.get());
     }
     void stop()
@@ -62,7 +62,7 @@ class KitchenIPC {
      */
     bool addPizza(std::string pizzaType)
     {
-        this->write.send(pizzaType);
+        this->write.send(pizzaType + "\0");
         return this->read.get() == "TRUE" ? true : false;
     }
 

@@ -119,7 +119,7 @@ bool Reception::assignToKitchen(PizzaCmd_t command)
     int best_index = 0;
     int best_nbr = this->kitchens[0].getPizzaNbr();
 
-    for (int i = 0; i < this->kitchens.size(); i++) {
+    for (int i = 1; i < this->kitchens.size(); i++) {
         int tmp = this->kitchens[0].getPizzaNbr();
         if (tmp < best_nbr) {
             best_nbr = tmp;
