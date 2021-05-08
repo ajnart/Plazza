@@ -116,9 +116,8 @@ void Kitchen::run()
         /* commandLine = this->read.get(); */
         commandLine = this->read.get();
 #ifdef __DEBUG
-                          std::cout
-                      << "[DEBUG] kitchen " << id << ": flushed command!"
-                      << std::endl;
+        std::cout << "[DEBUG] kitchen " << id
+                  << ": flushed command: " << commandLine << std::endl;
 #endif
         if (commandLine == "STATUS")
             this->status();

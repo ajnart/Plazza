@@ -89,14 +89,13 @@ class NamedPipe {
     }
     std::string get()
     {
-        std::string msg;
         char buf[64];
         read(readfd, buf, 64);
         /* getline(this->read, msg); */
 #ifdef __DEBUG
-        std::cout << "got " << msg << " from " << this->fifo << std::endl;
+        std::cout << "got [" << buf << "] from " << this->fifo << std::endl;
 #endif
-        return msg;
+        return buf;
     }
     bool tryGet(std::string& save)
     {
