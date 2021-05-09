@@ -11,6 +11,7 @@
 #include <fcntl.h>
 #include <fstream>
 #include <iostream>
+#include <poll.h>
 #include <string>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -81,10 +82,9 @@ class NamedPipe {
     void send(std::string msg)
     {
 #ifdef __DEBUG
-        std::cout << "sending " << msg << " (" << msg.size() <<") to " << this->fifo << std::endl;
+        std::cout << "sending " << msg << " (" << msg.size() << ") to "
+                  << this->fifo << std::endl;
 #endif
-        // this->write.write(msg.data(), msg.size());
-        /* write << msg; */
         write(this->writefd, msg.data(), msg.size());
     }
     std::string get()
@@ -99,29 +99,15 @@ class NamedPipe {
     }
     bool tryGet(std::string& save)
     {
-#ifdef __DEBUG
-        std::cout << "waiting for " << this->fifo << std::endl;
-#endif
-        std::string msg;
-        int nbRead = 0;
-        char c = 0;
-        save.clear();
-        do {
-            read(readfd, &c, 1);
-            /* nbRead = this->read.readsome(&c, 1); */
-            if (nbRead == 1) {
-#ifdef __DEBUG
-                std::cout << "got something from " << this->fifo << std::endl;
-#endif
-                if (c == '\n') {
-                    save = msg;
-                    return true;
-                } else {
-                    msg.append(1, c);
-                }
-            }
-        } while (c != 0);
-        return false;
+        struct pollfd ufd;
+        ufd.fd = this->readfd;
+        ufd.events = POLLIN;
+
+        if (poll(&ufd, 1, 100) == 0) {
+            return false;
+        }
+        save = this->get();
+        return true;
     }
 
   private:

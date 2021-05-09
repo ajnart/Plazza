@@ -44,6 +44,7 @@ void Kitchen::status(void) noexcept
     for (auto& i: this->Cooks)
         std::cout << (i.isBusy() ? "\033[31m •\033[0m" : "\033[32m •\033[0m");
     std::cout << std::endl;
+    this->write.send("OK");
 }
 
 void Kitchen::getPizzaNbr() noexcept
@@ -65,14 +66,18 @@ using attr = std::tuple<Pizza, Ingredients_t, int>;
 
 bool Kitchen::CookManager(attr attrs)
 {
+    int i = 0;
     for (auto cook = this->Cooks.begin(); cook != this->Cooks.end(); cook++) {
-        if (!cook->isBusy() &&
+        if ((!cook->isBusy()) &&
             this->Stock.tryConsumeIngredients(std::get<1>(attrs))) {
+            std::cout << "[KITCHEN] cook " << i << " is free!" << std::endl;
             cook->bake(std::get<2>(attrs) * this->CookTimeMultiplier);
             this->pizzaNb -= 1;
             return true;
         }
+        i++;
     }
+    std::cout << "[KITCHEN] couldnt make it" << std::endl;
     return false;
 }
 
@@ -119,20 +124,16 @@ void Kitchen::run()
     this->read.openPipe();
     while (this->running) {
         this->tryRefill();
-        /* commandLine = this->read.get(); */
-        commandLine = this->read.get();
-#ifdef __DEBUG
-        std::cout << "[DEBUG] kitchen " << id
-                  << ": flushed command: " << commandLine << std::endl;
-#endif
-        if (commandLine == "STATUS")
-            this->status();
-        else if (commandLine == "PIZZANBR")
-            this->getPizzaNbr();
-        else if (commandLine == "STOP")
-            return;
-        else
-            this->handlePizza(commandLine);
+        if (this->read.tryGet(commandLine)) {
+            if (commandLine == "STATUS")
+                this->status();
+            else if (commandLine == "PIZZANBR")
+                this->getPizzaNbr();
+            else if (commandLine == "STOP")
+                return;
+            else
+                this->handlePizza(commandLine);
+        }
         if (!queue.empty()) {
             Pizza tmp = this->queue.front();
             attr attributes = getPizzaAttributes(tmp);

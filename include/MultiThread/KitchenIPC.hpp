@@ -47,6 +47,7 @@ class KitchenIPC {
     void printStatus()
     {
         this->write.send("STATUS\0");
+        this->read.get();
     }
     int getPizzaNbr()
     {
