@@ -24,7 +24,7 @@
 
 /* } */
 
-#include "KitchenIPC.hpp"
+#include "MultiThread/KitchenIPC.hpp"
 
 namespace Plazza
 {
