@@ -6,11 +6,8 @@
 */
 
 #include "Cook.hpp"
-#include <unistd.h>
 #include <chrono>
-#ifdef __DEBUG
-#include <iostream>
-#endif
+#include <unistd.h>
 
 namespace Plazza
 {

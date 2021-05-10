@@ -82,6 +82,9 @@ attr getPizzaAttributes(const Pizza& pizza)
 
 void Kitchen::handlePizza(const std::string& name)
 {
+    if (name.empty()) {
+        std::cout << "empty name" << std::endl;
+    }
     if (this->pizzaNb > this->cookNb) {
         this->write.send("FALSE");
         return;
