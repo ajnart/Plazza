@@ -7,6 +7,7 @@
 
 #include "Reception.hpp"
 
+#include <cstdint>
 #include <string.h>
 
 #include <algorithm>
@@ -26,9 +27,6 @@ Reception::Reception(params_t params)
 {
     this->params = params;
     this->kitchens.emplace_back(params, 0);
-#ifdef __DEBUG
-    std::cout << "[DEBUG] Reception has been created" << std::endl;
-#endif
 }
 
 std::vector<std::string> Reception::split(const std::string& s,
@@ -116,22 +114,25 @@ Action Reception::checkLine(std::string input) noexcept
 
 bool Reception::assignToKitchen(PizzaCmd_t command)
 {
-    int best_index = 0;
-    int best_nbr = this->kitchens[0].getPizzaNbr();
+    int best_nbr = INT32_MAX;
+    std::list<KitchenIPC>::iterator best_it;
 
-    for (int i = 1; i < this->kitchens.size(); i++) {
-        int tmp = this->kitchens[i].getPizzaNbr();
-        if (tmp < best_nbr) {
+    for (auto it = this->kitchens.begin(); it != this->kitchens.end(); it++) {
+        int tmp = it->getPizzaNbr();
+        if (tmp < this->params.chefs_nbr && tmp < best_nbr) {
             best_nbr = tmp;
-            best_index = i;
+            best_it = it;
         }
     }
-    return this->kitchens[best_nbr].addPizza(command.type);
+    if (best_nbr == INT32_MAX) {
+        return false;
+    }
+    return best_it->addPizza(command.type);
 }
 
 void Reception::assignToNewKitchen(PizzaCmd_t command)
 {
-    this->kitchens.push_back(KitchenIPC(this->params, this->kitchens.size()));
+    this->kitchens.emplace_back(this->params, this->kitchens.size());
     if (!this->kitchens.back().addPizza(command.type))
         throw std::logic_error("Fatal error: New Kitchen is full at creation");
 }
@@ -139,9 +140,6 @@ void Reception::assignToNewKitchen(PizzaCmd_t command)
 void Reception::manageCommands()
 {
     for (auto const& command: Commands) {
-#ifdef __DEBUG
-    std::cout << "Gonna send " << command.number << " commands." << std::endl;
-#endif
         for (int i = 0; i < command.number; i++) {
             if (!this->assignToKitchen(command)) {
                 this->assignToNewKitchen(command);
@@ -152,9 +150,6 @@ void Reception::manageCommands()
 
 int Reception::run() noexcept
 {
-#ifdef __DEBUG
-    std::cout << "[DEBUG] Reception is now running" << std::endl;
-#endif
     std::string line;
     Action action = Action::NONE;
     std::cout << "$> ";

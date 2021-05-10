@@ -15,6 +15,7 @@
 #include <unordered_map>
 #include <map>
 #include <vector>
+#include <list>
 
 namespace Plazza
 {
@@ -94,7 +95,7 @@ class Reception {
     void assignToNewKitchen(PizzaCmd_t command);
 
     std::vector<PizzaCmd_t> Commands;
-    std::vector<KitchenIPC> kitchens;
+    std::list<KitchenIPC> kitchens;
 
     params_t params;
 };

@@ -38,41 +38,27 @@ class NamedPipe {
     }
     void initPipe(int id, Type_t type, bool parent)
     {
-        std::cout << (parent ? "PARENT: " : "CHILD: ");
-        std::cout << (type == WRITE ? "WRITE: \n" : "READ: \n");
         this->type = type;
         this->parent = parent;
         this->fifo = "fifo_" + std::to_string(id) +
                      std::string(parent ? (type == READ ? "0" : "1")
                                         : (type == READ ? "1" : "0"));
         if (parent) {
-#ifdef __DEBUG
-            std::cout << "Creating " << this->fifo << std::endl;
-#endif
             remove(this->fifo.data());
-            /* umask(0); */
-            /* if (mknod(this->fifo.data(), 0666|S_IFIFO, 0) == -1) */
-            /*     throw (Plazza::PlazzaException("pute")); */
             mkfifo(this->fifo.data(), 0667);
         }
     }
     void openPipe()
     {
         if (this->type == READ) {
-            std::cout << "openning fifo for reading: " << this->fifo << "\n";
 
             readfd = open(fifo.data(), O_RDONLY);
             if (readfd < 0)
-                throw(Plazza::PlazzaException("fuck read"));
-            std::cout << "ok for " << (parent ? "PARENT" : "CHILD")
-                      << " reading pipe\n";
+                throw(Plazza::PlazzaException(""));
         } else {
-            std::cout << "openning fifo for writing: [" << this->fifo << "]\n";
             writefd = open(fifo.data(), O_WRONLY);
             if (writefd < 0)
-                throw(Plazza::PlazzaException("fuck write"));
-            std::cout << "ok for " << (parent ? "PARENT" : "CHILD")
-                      << " writing pipe\n";
+                throw(Plazza::PlazzaException(""));
         }
     }
 
@@ -81,20 +67,12 @@ class NamedPipe {
 
     void send(std::string msg)
     {
-#ifdef __DEBUG
-        std::cout << "sending " << msg << " (" << msg.size() << ") to "
-                  << this->fifo << std::endl;
-#endif
         write(this->writefd, msg.data(), msg.size());
     }
     std::string get()
     {
         char buf[10] = "\0\0\0\0\0\0\0\0\0";
         read(readfd, buf, 9);
-        /* getline(this->read, msg); */
-#ifdef __DEBUG
-        std::cout << "got [" << buf << "] from " << this->fifo << std::endl;
-#endif
         return buf;
     }
     bool tryGet(std::string& save)
@@ -111,8 +89,6 @@ class NamedPipe {
     }
 
   private:
-    /* std::ofstream write; */
-    /* std::ifstream read; */
     bool parent;
     int writefd;
     int readfd;
