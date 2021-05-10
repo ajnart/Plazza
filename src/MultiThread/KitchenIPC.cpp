@@ -47,4 +47,28 @@ KitchenIPC::KitchenIPC(params_t params, int id) : kitchen(params, id)
         this->read.openPipe();
         this->write.openPipe();
 }
+
+void KitchenIPC::printStatus()
+{
+        this->write.send("STATUS");
+}
+
+int KitchenIPC::getPizzaNbr()
+{
+        this->write.send("PIZZANBR");
+        return std::stoi(this->read.get());
+}
+
+void KitchenIPC::stop()
+{
+    this->write.send("STOP");
+}
+    /*
+     * send a pizza to a kitchen, return weither the op succeded or not
+     */
+bool KitchenIPC::addPizza(std::string pizzaType)
+{
+    this->write.send(pizzaType);
+    return this->read.get() == "TRUE" ? true : false;
+}
 }
