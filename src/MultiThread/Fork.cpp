@@ -7,18 +7,14 @@
 
 #include "MultiThread/Fork.hpp"
 
-
-namespace Plazza
-{
 int Fork::plazzaFork()
 {
-    #ifdef __DEBUG
-        std::cout << "[DEBUG] Forking" << std::endl;
-    #endif
-        int i = fork();
-        if (i < 0) {
-            throw(Plazza::PlazzaException("System Error: fork failed"));
-        }
-        return i;
+#ifdef __DEBUG
+    std::cout << "[DEBUG] Forking" << std::endl;
+#endif
+    int i = fork();
+    if (i < 0) {
+        throw(Plazza::PlazzaException("System Error: fork failed"));
     }
+    return i;
 }

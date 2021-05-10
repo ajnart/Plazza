@@ -12,7 +12,6 @@ namespace Plazza
 {
 int plazza(params_t params)
 {
-
     /* Plazza::Kitchen k{params.multiplier, params.chefs_nbr,
      * params.stock_refill_time}; */
     /* k.status(); */

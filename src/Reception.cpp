@@ -27,7 +27,7 @@ Reception::Reception(params_t params)
     this->params = params;
     this->kitchens.emplace_back(params, 0);
 #ifdef __DEBUG
-        std::cout << "[DEBUG] Reception has been created" << std::endl;
+    std::cout << "[DEBUG] Reception has been created" << std::endl;
 #endif
 }
 
@@ -46,7 +46,7 @@ std::vector<std::string> Reception::split(const std::string& s,
 void Reception::printStatus() noexcept
 {
     int idx = 1;
-    for (auto &i: kitchens) {
+    for (auto& i: kitchens) {
         std::cout << "Kitchen #" << idx << std::endl;
         idx++;
         i.printStatus();
@@ -83,7 +83,7 @@ PizzaCmd_t Reception::getCommandFromString(const std::string str)
         throw(PlazzaException("Unknown pizza size."));
     }
     try {
-        command.type = parsed[0]; //PizzaType.at(parsed[0]);
+        command.type = parsed[0]; // PizzaType.at(parsed[0]);
         command.number = std::stoi(parsed[2].substr(1));
     } catch (std::out_of_range) {
         throw(PlazzaException("Unknown pizza type."));
@@ -131,8 +131,7 @@ bool Reception::assignToKitchen(PizzaCmd_t command)
 
 void Reception::assignToNewKitchen(PizzaCmd_t command)
 {
-    this->kitchens.push_back(
-        KitchenIPC(this->params, this->kitchens.size()));
+    this->kitchens.push_back(KitchenIPC(this->params, this->kitchens.size()));
     if (!this->kitchens.back().addPizza(command.type))
         throw std::logic_error("Fatal error: New Kitchen is full at creation");
 }
@@ -140,11 +139,11 @@ void Reception::assignToNewKitchen(PizzaCmd_t command)
 void Reception::manageCommands()
 {
     for (auto const& command: Commands) {
-/* #ifdef __DEBUG */
-/*         std::cout << "- "; */
-/*         for (auto i = command.begin(); i != command.end(); ++i) */
-/*             std::cout << *i << ' '; */
-/* #endif */
+        /* #ifdef __DEBUG */
+        /*         std::cout << "- "; */
+        /*         for (auto i = command.begin(); i != command.end(); ++i) */
+        /*             std::cout << *i << ' '; */
+        /* #endif */
         if (!this->assignToKitchen(command)) {
             this->assignToNewKitchen(command);
         }
@@ -154,7 +153,7 @@ void Reception::manageCommands()
 int Reception::run() noexcept
 {
 #ifdef __DEBUG
-        std::cout << "[DEBUG] Reception is now running" << std::endl;
+    std::cout << "[DEBUG] Reception is now running" << std::endl;
 #endif
     std::string line;
     Action action = Action::NONE;
