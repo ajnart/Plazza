@@ -62,7 +62,7 @@ static void printHelp()
               << "Size\t= S | M | L | XL | XXL NUMBER :" << std::endl
               << "Number\t= x[1..9][0..9] *" << std::endl
               << "Ordering example which is grammatically valid:" << std::endl
-              << "regina XXL x2; fantasia M x3;margarita S x1\"" << std::endl;
+              << "regina XXL x2; fantasia M x3; margarita S x1" << std::endl;
 }
 
 PizzaCmd_t Reception::getCommandFromString(const std::string str)
