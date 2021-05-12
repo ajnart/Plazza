@@ -26,7 +26,6 @@ namespace Plazza
 Reception::Reception(params_t params)
 {
     this->params = params;
-    this->kitchens.emplace_back(params, 0);
 }
 
 std::vector<std::string> Reception::split(const std::string& s,
@@ -44,6 +43,8 @@ std::vector<std::string> Reception::split(const std::string& s,
 void Reception::printStatus() noexcept
 {
     int idx = 1;
+    if (kitchens.empty())
+        std::cerr << "Couldn't print status. No kitchens are currently avilable." << std::endl;
     for (auto& i: kitchens) {
         std::cout << "Kitchen #" << idx << std::endl;
         idx++;
