@@ -8,7 +8,7 @@
 #ifndef RECEPTION_HPP_
 #define RECEPTION_HPP_
 
-#include "MultiThread/KitchenIPC.hpp"
+#include "MultiThread/KitchenConnect.hpp"
 #include "Pizza.hpp"
 #include <chrono>
 #include <iostream>
@@ -49,7 +49,7 @@ class Reception {
     Reception(Reception const& to_copy) = delete;
     Reception(Reception&& to_move) = delete;
 
-    ~Reception() = default;
+    ~Reception();
 
     Reception& operator=(Reception const& to_copy) = delete;
 
@@ -96,7 +96,7 @@ class Reception {
     void CheckKichenActivity();
 
     std::vector<PizzaCmd_t> Commands;
-    std::list<KitchenIPC> kitchens;
+    std::list<KitchenConnect> kitchens;
     params_t params;
 };
 

@@ -11,6 +11,7 @@
 #include <string.h>
 
 #include <algorithm>
+#include <errno.h>
 #include <iostream>
 #include <list>
 #include <numeric>
@@ -29,6 +30,12 @@ namespace Plazza
 Reception::Reception(params_t params)
 {
     this->params = params;
+}
+
+Reception::~Reception()
+{
+    for (auto it = this->kitchens.begin(); it != this->kitchens.end(); it++)
+        it->stop();
 }
 
 std::vector<std::string> Reception::split(const std::string& s,
@@ -89,9 +96,9 @@ PizzaCmd_t Reception::getCommandFromString(const std::string str)
     try {
         command.type = parsed[0]; // PizzaType.at(parsed[0]);
         command.number = std::stoi(parsed[2].substr(1));
-    } catch (std::out_of_range) {
+    } catch (std::out_of_range&) {
         throw(PlazzaException("Unknown pizza type."));
-    } catch (std::invalid_argument) {
+    } catch (std::invalid_argument&) {
         throw(PlazzaException("Invalid number of pizza"));
     }
     return command;
@@ -121,11 +128,12 @@ Action Reception::checkLine(std::string input) noexcept
 bool Reception::assignToKitchen(PizzaCmd_t command)
 {
     int best_nbr = INT32_MAX;
-    std::list<KitchenIPC>::iterator best_it;
+    std::list<KitchenConnect>::iterator best_it;
 
     for (auto it = this->kitchens.begin(); it != this->kitchens.end(); it++) {
         int tmp = it->getPizzaNbr();
-        if (tmp < this->params.chefs_nbr && tmp < best_nbr) {
+        if (static_cast<unsigned int>(tmp) < this->params.chefs_nbr &&
+            tmp < best_nbr) {
             best_nbr = tmp;
             best_it = it;
         }
@@ -156,12 +164,12 @@ void Reception::manageCommands()
 
 void Reception::CheckKichenActivity()
 {
-    for (std::list<KitchenIPC>::iterator it = this->kitchens.begin();
+    for (std::list<KitchenConnect>::iterator it = this->kitchens.begin();
          it != this->kitchens.end();) {
         if (!it->IsActive()) {
-            it = this->kitchens.erase(it);
+            it = this->kitchens.erase(it++);
         } else {
-            it++;
+            ++it;
         }
     }
 }
@@ -198,6 +206,7 @@ int Reception::run() noexcept
         // commands)
         std::cout << "\n$> ";
     }
+    std::cout << "[" << errno << "]" << std::endl;
     return 0;
 }
 } // namespace Plazza

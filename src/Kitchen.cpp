@@ -16,10 +16,10 @@
 namespace Plazza
 {
 Kitchen::Kitchen(params_t params, int id) :
+    Cooks(params.chefs_nbr),
     cookNb(params.chefs_nbr),
     refillTime(params.stock_refill_time),
-    CookTimeMultiplier(params.multiplier),
-    Cooks(params.chefs_nbr)
+    CookTimeMultiplier(params.multiplier)
 {
     this->id = id;
 }
@@ -43,12 +43,12 @@ void Kitchen::status(void) noexcept
     for (auto& i: this->Cooks)
         std::cout << (i.isBusy() ? "\033[31m •\033[0m" : "\033[32m •\033[0m");
     std::cout << std::endl;
-    this->write.send("OK");
+    this->write->send("OK");
 }
 
 void Kitchen::getPizzaNbr() noexcept
 {
-    this->write.send(std::to_string(this->pizzaNb));
+    this->write->send(std::to_string(this->pizzaNb));
 }
 
 using attr = std::tuple<Pizza, Ingredients_t, int>;
@@ -86,14 +86,13 @@ void Kitchen::handlePizza(const std::string& name)
         std::cout << "empty name" << std::endl;
     }
     if (this->pizzaNb > this->cookNb) {
-        this->write.send("FALSE");
+        this->write->send("FALSE");
         return;
     }
-    this->write.send("TRUE");
+    this->write->send("TRUE");
     Pizza pizza = PizzaType.at(name);
     this->queue.push(pizza);
     this->pizzaNb += 1;
-    attr attributes = getPizzaAttributes(pizza);
 }
 
 void Kitchen::stop()
@@ -111,11 +110,11 @@ bool Kitchen::AreCooksActive()
 
 bool Kitchen::IsKitchenActive()
 {
-    if(this->ShouldKitchenClose()) {
-        this->write.send("FALSE\0");
+    if (this->ShouldKitchenClose()) {
+        this->write->send("FALSE\0");
         return false;
     }
-    this->write.send("TRUE\0");
+    this->write->send("TRUE\0");
     return true;
 }
 
@@ -138,13 +137,13 @@ void Kitchen::run()
 {
     std::string commandLine;
 
-    this->read.initPipe(id, NamedPipe::READ, false);
-    this->write.initPipe(id, NamedPipe::WRITE, false);
-    this->write.openPipe();
-    this->read.openPipe();
+    this->read = NamedPipe(id, NamedPipe::READ, false);
+    this->write = NamedPipe(id, NamedPipe::WRITE, false);
+    this->write->openPipe();
+    this->read->openPipe();
     while (this->running) {
         this->tryRefill();
-        if (this->read.tryGet(commandLine)) {
+        if (this->read->tryGet(commandLine)) {
             if (commandLine == "STATUS")
                 this->status();
             else if (commandLine == "PIZZANBR")
@@ -153,8 +152,8 @@ void Kitchen::run()
                 return;
             else if (commandLine == "ACTIVE?") {
                 this->IsKitchenActive();
-            }
-            else this->handlePizza(commandLine);
+            } else
+                this->handlePizza(commandLine);
         }
         if (!queue.empty()) {
             Pizza tmp = this->queue.front();

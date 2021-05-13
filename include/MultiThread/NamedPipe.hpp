@@ -26,17 +26,17 @@ class NamedPipe {
         WRITE,
         READ
     };
-    NamedPipe() = default;
+    NamedPipe(int id, Type_t type, bool parent);
     NamedPipe(NamedPipe const& to_copy) = delete;
-    NamedPipe(NamedPipe&& to_move) = default;
+    NamedPipe(NamedPipe&& to_move);
 
     ~NamedPipe();
 
-    void initPipe(int id, Type_t type, bool parent);
+    /* void initPipe(int id, Type_t type, bool parent); */
     void openPipe();
 
     NamedPipe& operator=(NamedPipe const& to_copy) = delete;
-    NamedPipe& operator=(NamedPipe&& to_move) = default;
+    NamedPipe& operator=(NamedPipe&& to_move);
 
     void send(std::string msg);
     std::string get();

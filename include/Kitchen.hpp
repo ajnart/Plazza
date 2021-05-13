@@ -15,6 +15,7 @@
 #include "MultiThread/NamedPipe.hpp"
 #include "MultiThread/SafeQueue.hpp"
 #include "Pizza.hpp"
+#include <optional>
 
 namespace Plazza
 {
@@ -79,8 +80,8 @@ class Kitchen {
     const int CookTimeMultiplier;
     int id;
     bool running = true;
-    NamedPipe read;
-    NamedPipe write;
+    std::optional<NamedPipe> read;
+    std::optional<NamedPipe> write;
     std::queue<Pizza> queue;
     // std::thread t;
     FoodStock Stock;

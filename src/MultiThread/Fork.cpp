@@ -6,15 +6,18 @@
 */
 
 #include "MultiThread/Fork.hpp"
+#include <sys/wait.h>
 
 int Fork::plazzaFork()
 {
-#ifdef __DEBUG
-    std::cout << "[DEBUG] Forking" << std::endl;
-#endif
     int i = fork();
     if (i < 0) {
         throw(Plazza::PlazzaException("System Error: fork failed"));
     }
     return i;
+}
+
+int Fork::plazzaWait(int pid)
+{
+    return waitpid(pid, NULL, WNOHANG);
 }

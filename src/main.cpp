@@ -29,7 +29,7 @@ int main(int ac, char** av)
     params_t params;
     try {
         params = ArgParse::ParseArgs(av);
-    } catch (Plazza::PlazzaException exp) {
+    } catch (Plazza::PlazzaException& exp) {
         std::cout << exp.what();
         return 84;
     }
