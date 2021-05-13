@@ -32,11 +32,11 @@ class KitchenIPC {
     void stop();
 
     bool addPizza(std::string pizzaType);
-
+    bool IsActive();
+    int id;
   private:
     Kitchen kitchen;
     NamedPipe write;
     NamedPipe read;
-    int id;
 };
 }

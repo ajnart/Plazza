@@ -57,6 +57,11 @@ class Kitchen {
     /* } */
 
     bool getlineAsync();
+    // Checks if any of the cooks are busy
+    bool AreCooksActive();
+    bool IsKitchenActive();
+    // Checks if all the cooks have been out of work for 4 seconds.
+    bool ShouldKitchenClose();
 
     bool CookManager(std::tuple<Pizza, Ingredients_t, int>);
     /*

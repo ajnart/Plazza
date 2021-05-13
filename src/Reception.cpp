@@ -12,9 +12,12 @@
 
 #include <algorithm>
 #include <iostream>
+#include <list>
+#include <numeric>
 #include <regex>
 #include <sstream>
 #include <string>
+#include <string_view>
 #include <tuple>
 #include <vector>
 
@@ -44,7 +47,9 @@ void Reception::printStatus() noexcept
 {
     int idx = 1;
     if (kitchens.empty())
-        std::cerr << "Couldn't print status. No kitchens are currently avilable." << std::endl;
+        std::cerr
+            << "Couldn't print status. No kitchens are currently avilable."
+            << std::endl;
     for (auto& i: kitchens) {
         std::cout << "Kitchen #" << idx << std::endl;
         idx++;
@@ -149,12 +154,25 @@ void Reception::manageCommands()
     }
 }
 
+void Reception::CheckKichenActivity()
+{
+    for (std::list<KitchenIPC>::iterator it = this->kitchens.begin();
+         it != this->kitchens.end();) {
+        if (!it->IsActive()) {
+            it = this->kitchens.erase(it);
+        } else {
+            it++;
+        }
+    }
+}
+
 int Reception::run() noexcept
 {
     std::string line;
     Action action = Action::NONE;
     std::cout << "$> ";
     while (getline(std::cin, line)) {
+        CheckKichenActivity();
         try {
             action = this->checkLine(line);
         } catch (PlazzaException& e) {

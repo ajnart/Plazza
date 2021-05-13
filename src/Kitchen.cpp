@@ -26,7 +26,7 @@ Kitchen::Kitchen(params_t params, int id) :
 
 Kitchen::~Kitchen()
 {
-    std::cout << "!!!!! KITCHEN " << id << " DESTROYED !!!!!!" << std::endl;
+    std::cout << "!!!!! KITCHEN " << id << " DESTROYED !!!!!!\n";
 }
 
 void Kitchen::status(void) noexcept
@@ -101,6 +101,39 @@ void Kitchen::stop()
     running = false;
 }
 
+bool Kitchen::AreCooksActive()
+{
+    for (auto& i: this->Cooks)
+        if (i.isBusy())
+            return true;
+    return false;
+}
+
+bool Kitchen::IsKitchenActive()
+{
+    if(this->ShouldKitchenClose()) {
+        this->write.send("FALSE\0");
+        return false;
+    }
+    this->write.send("TRUE\0");
+    return true;
+}
+
+bool Kitchen::ShouldKitchenClose()
+{
+    static auto t1 = std::chrono::high_resolution_clock::now();
+    auto t2 = std::chrono::high_resolution_clock::now();
+    if (AreCooksActive()) {
+        t1 = std::chrono::high_resolution_clock::now();
+        return false;
+    }
+    if (std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1) >=
+        std::chrono::milliseconds(4000)) {
+        return true;
+    }
+    return false;
+}
+
 void Kitchen::run()
 {
     std::string commandLine;
@@ -118,8 +151,10 @@ void Kitchen::run()
                 this->getPizzaNbr();
             else if (commandLine == "STOP")
                 return;
-            else
-                this->handlePizza(commandLine);
+            else if (commandLine == "ACTIVE?") {
+                this->IsKitchenActive();
+            }
+            else this->handlePizza(commandLine);
         }
         if (!queue.empty()) {
             Pizza tmp = this->queue.front();

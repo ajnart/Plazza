@@ -12,14 +12,13 @@
 #include "Pizza.hpp"
 #include <chrono>
 #include <iostream>
-#include <unordered_map>
-#include <map>
-#include <vector>
 #include <list>
+#include <map>
+#include <unordered_map>
+#include <vector>
 
 namespace Plazza
 {
-
 enum PizzaSize
 {
     S = 1,
@@ -94,9 +93,10 @@ class Reception {
      */
     void assignToNewKitchen(PizzaCmd_t command);
 
+    void CheckKichenActivity();
+
     std::vector<PizzaCmd_t> Commands;
     std::list<KitchenIPC> kitchens;
-
     params_t params;
 };
 

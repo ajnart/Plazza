@@ -22,6 +22,18 @@ KitchenIPC::KitchenIPC(params_t params, int id) : kitchen(params, id)
     this->read.openPipe();
     this->write.openPipe();
 }
+
+bool KitchenIPC::IsActive()
+{
+    this->write.send("ACTIVE?\0");
+    std::string res(this->read.get());
+    if (res == "FALSE") {
+        this->write.send("STOP\0");
+        return false;
+    }
+    return true;
+}
+
 void KitchenIPC::printStatus()
 {
     this->write.send("STATUS\0");
@@ -41,6 +53,7 @@ void KitchenIPC::stop()
  */
 bool KitchenIPC::addPizza(std::string pizzaType)
 {
+    std::cout << "ébite" << std::endl;
     this->write.send(pizzaType + "\0");
     return this->read.get() == "TRUE" ? true : false;
 }
