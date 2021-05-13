@@ -26,7 +26,6 @@ namespace Plazza
 Reception::Reception(params_t params)
 {
     this->params = params;
-    this->kitchens.emplace_back(params, 0);
 }
 
 std::vector<std::string> Reception::split(const std::string& s,
@@ -44,6 +43,8 @@ std::vector<std::string> Reception::split(const std::string& s,
 void Reception::printStatus() noexcept
 {
     int idx = 1;
+    if (kitchens.empty())
+        std::cerr << "Couldn't print status. No kitchens are currently avilable." << std::endl;
     for (auto& i: kitchens) {
         std::cout << "Kitchen #" << idx << std::endl;
         idx++;
@@ -61,7 +62,7 @@ static void printHelp()
               << "Size\t= S | M | L | XL | XXL NUMBER :" << std::endl
               << "Number\t= x[1..9][0..9] *" << std::endl
               << "Ordering example which is grammatically valid:" << std::endl
-              << "regina XXL x2; fantasia M x3;margarita S x1\"" << std::endl;
+              << "regina XXL x2; fantasia M x3; margarita S x1" << std::endl;
 }
 
 PizzaCmd_t Reception::getCommandFromString(const std::string str)

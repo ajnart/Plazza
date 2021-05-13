@@ -6,7 +6,9 @@
 */
 
 #include "Cook.hpp"
+#include <chrono>
 #include <iostream>
+#include <unistd.h>
 
 namespace Plazza
 {
@@ -35,6 +37,10 @@ void Cook::bake(int timeMs, Pizza pizza) noexcept
         t.join();
     }
     t = std::move(std::thread(&Cook::baking, this, timeMs));
+
+#ifdef __DEBUG
+    std::cout << "\r A cook has finished baking a pizza." << std::endl;
+#endif
 }
 
 void Cook::baking(int time)
