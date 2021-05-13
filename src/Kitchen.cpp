@@ -59,7 +59,8 @@ bool Kitchen::CookManager(attr attrs)
     for (auto cook = this->Cooks.begin(); cook != this->Cooks.end(); cook++) {
         if ((!cook->isBusy()) &&
             this->Stock.tryConsumeIngredients(std::get<1>(attrs))) {
-            cook->bake(std::get<2>(attrs) * this->CookTimeMultiplier);
+            cook->bake(std::get<2>(attrs) * this->CookTimeMultiplier,
+                       std::get<0>(attrs));
             this->pizzaNb -= 1;
             return true;
         }

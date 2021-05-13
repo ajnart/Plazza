@@ -6,8 +6,7 @@
 */
 
 #include "Cook.hpp"
-#include <chrono>
-#include <unistd.h>
+#include <iostream>
 
 namespace Plazza
 {
@@ -28,8 +27,9 @@ bool Cook::isBusy() noexcept
     return this->busy.load();
 }
 
-void Cook::bake(int timeMs) noexcept
+void Cook::bake(int timeMs, Pizza pizza) noexcept
 {
+    this->pizza = pizza;
     this->busy.store(true, std::memory_order_relaxed);
     if (t.joinable()) {
         t.join();
@@ -39,7 +39,14 @@ void Cook::bake(int timeMs) noexcept
 
 void Cook::baking(int time)
 {
+    /* for (auto it : PizzaType) { */
+    /*     if (it.second == this->pizza) { */
+    /*         std::cout << it.first; */
+    /*         break; */
+    /*     } */
+    /* } */
     std::this_thread::sleep_for(std::chrono::milliseconds(time));
+    /* std::cout << " pizza have beek baked!" << std::endl; */
     this->busy.store(false, std::memory_order_relaxed);
 }
 }

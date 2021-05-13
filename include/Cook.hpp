@@ -10,6 +10,7 @@
 #include <mutex>
 #include <thread>
 #include <atomic>
+#include "Pizza.hpp"
 
 namespace Plazza {
 class Cook {
@@ -22,10 +23,11 @@ class Cook {
 
     Cook& operator=(Cook const& to_copy) = delete;
 
-    void bake(int timeMs) noexcept;
+    void bake(int timeMs, Pizza pizza) noexcept;
     bool isBusy() noexcept;
 
   private:
+    Pizza pizza;
     void baking(int time);
     std::atomic_bool busy;
     std::thread t;
