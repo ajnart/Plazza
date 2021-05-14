@@ -39,7 +39,8 @@ enum Action
 
 struct PizzaCmd_t
 {
-    std::string type = "";
+    std::string type = "NULL";
+    PizzaSize size = S;
     int number;
 };
 

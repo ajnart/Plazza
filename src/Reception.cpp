@@ -94,10 +94,18 @@ PizzaCmd_t Reception::getCommandFromString(const std::string str)
         throw(PlazzaException("Unknown pizza size."));
     }
     try {
-        command.type = parsed[0]; // PizzaType.at(parsed[0]);
+        for (auto& i: {
+                 "regina",
+                 "fantasia",
+                 "margarita",
+                 "americana",
+             }) {
+            if (i == parsed[0])
+                command.type = parsed[0];
+        }
+        if (command.type == "NULL")
+            throw(PlazzaException("Unknown Pizza type."));
         command.number = std::stoi(parsed[2].substr(1));
-    } catch (std::out_of_range&) {
-        throw(PlazzaException("Unknown pizza type."));
     } catch (std::invalid_argument&) {
         throw(PlazzaException("Invalid number of pizza"));
     }
@@ -128,7 +136,7 @@ Action Reception::checkLine(std::string input) noexcept
     if (input == "exit")
         return Action::EXIT;
     auto commands = split(input, ';');
-    for (auto &token: commands) {
+    for (auto& token: commands) {
         token = trim(token);
         std::cout << token << std::endl;
         try {
