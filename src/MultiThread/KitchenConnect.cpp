@@ -31,7 +31,6 @@ KitchenConnect::KitchenConnect(params_t params, int id)// : kitchen(params, id)
 bool KitchenConnect::IsActive()
 {
     if (Fork::plazzaWait(this->pid) > 0) {
-        std::cout << "not active" << std::endl;
         return false;
     }
     return true;

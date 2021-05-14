@@ -22,7 +22,7 @@ class KitchenConnect {
     KitchenConnect(KitchenConnect&& to_move) = delete;
 
     ~KitchenConnect() {
-        std::cout << "!!!!! KITCHENCONNECT " << id << " DESTROYED !!!!!!\n";
+        std::cout << "Kitchen #" << id+1 << " was closed due to inactivity." << std::endl;
         remove(("fifo" + std::to_string(pid) + "0").c_str());
         remove(("fifo" + std::to_string(pid) + "1").c_str());
     }

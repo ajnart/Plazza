@@ -104,6 +104,21 @@ PizzaCmd_t Reception::getCommandFromString(const std::string str)
     return command;
 }
 
+static std::string trim(const std::string& s)
+{
+    auto start = s.begin();
+    while (start != s.end() && std::isspace(*start)) {
+        start++;
+    }
+
+    auto end = s.end();
+    do {
+        end--;
+    } while (std::distance(start, end) > 0 && std::isspace(*end));
+
+    return std::string(start, end + 1);
+}
+
 Action Reception::checkLine(std::string input) noexcept
 {
     if (input == "help")
@@ -113,7 +128,9 @@ Action Reception::checkLine(std::string input) noexcept
     if (input == "exit")
         return Action::EXIT;
     auto commands = split(input, ';');
-    for (auto const& token: commands) {
+    for (auto &token: commands) {
+        token = trim(token);
+        std::cout << token << std::endl;
         try {
             Commands.push_back(getCommandFromString(token));
         } catch (PlazzaException& e) {
