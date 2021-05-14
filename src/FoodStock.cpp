@@ -6,6 +6,7 @@
 */
 
 #include "FoodStock.hpp"
+#include <iostream>
 
 namespace Plazza
 {

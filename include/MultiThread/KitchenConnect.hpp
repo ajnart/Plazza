@@ -21,7 +21,11 @@ class KitchenConnect {
     KitchenConnect(KitchenConnect const& to_copy) = delete;
     KitchenConnect(KitchenConnect&& to_move) = delete;
 
-    ~KitchenConnect() = default;
+    ~KitchenConnect() {
+        std::cout << "!!!!! KITCHENCONNECT " << id << " DESTROYED !!!!!!\n";
+        remove(("fifo" + std::to_string(pid) + "0").c_str());
+        remove(("fifo" + std::to_string(pid) + "1").c_str());
+    }
 
     KitchenConnect& operator=(KitchenConnect const& to_copy) = delete;
     KitchenConnect& operator=(KitchenConnect&& to_move) = delete;
@@ -37,8 +41,8 @@ class KitchenConnect {
     int id;
   private:
     int pid;
-    Kitchen kitchen;
-    std::optional<NamedPipe> write;
-    std::optional<NamedPipe> read;
+    /* Kitchen kitchen; */
+    NamedPipe write;
+    NamedPipe read;
 };
 }

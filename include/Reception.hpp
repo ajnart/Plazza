@@ -39,7 +39,7 @@ enum Action
 
 struct PizzaCmd_t
 {
-    std::string type;
+    std::string type = "";
     int number;
 };
 

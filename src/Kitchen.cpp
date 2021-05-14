@@ -22,6 +22,12 @@ Kitchen::Kitchen(params_t params, int id) :
     CookTimeMultiplier(params.multiplier)
 {
     this->id = id;
+    this->Stock.refill();
+    this->Stock.refill();
+    this->Stock.refill();
+    this->Stock.refill();
+    this->Stock.refill();
+    std::cout << std::boolalpha;
 }
 
 Kitchen::~Kitchen()
@@ -90,7 +96,13 @@ void Kitchen::handlePizza(const std::string& name)
         return;
     }
     this->write->send("TRUE");
-    Pizza pizza = PizzaType.at(name);
+    Pizza pizza;
+    try {
+        pizza = PizzaType.at(name);
+    } catch (std::out_of_range&) {
+        std::cout << "unknown pizza: " << name << std::endl;
+        return;
+    }
     this->queue.push(pizza);
     this->pizzaNb += 1;
 }
@@ -106,16 +118,6 @@ bool Kitchen::AreCooksActive()
         if (i.isBusy())
             return true;
     return false;
-}
-
-bool Kitchen::IsKitchenActive()
-{
-    if (this->ShouldKitchenClose()) {
-        this->write->send("FALSE\0");
-        return false;
-    }
-    this->write->send("TRUE\0");
-    return true;
 }
 
 bool Kitchen::ShouldKitchenClose()
@@ -143,17 +145,21 @@ void Kitchen::run()
     this->read->openPipe();
     while (this->running) {
         this->tryRefill();
+        if (ShouldKitchenClose()) {
+            return;
+        }
         if (this->read->tryGet(commandLine)) {
+            if (commandLine == "")
+                return;
             if (commandLine == "STATUS")
                 this->status();
             else if (commandLine == "PIZZANBR")
                 this->getPizzaNbr();
             else if (commandLine == "STOP")
                 return;
-            else if (commandLine == "ACTIVE?") {
-                this->IsKitchenActive();
-            } else
+            else {
                 this->handlePizza(commandLine);
+            }
         }
         if (!queue.empty()) {
             Pizza tmp = this->queue.front();
@@ -178,5 +184,4 @@ bool Kitchen::tryRefill() noexcept
     }
     return false;
 }
-
 }

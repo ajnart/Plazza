@@ -16,7 +16,9 @@ NamedPipe::NamedPipe(int id, Type_t type, bool parent)
                                     : (type == READ ? "1" : "0"));
     if (parent) {
         remove(this->fifo.data());
-        mkfifo(this->fifo.data(), 0667);
+        if (mkfifo(this->fifo.data(), 0667) == -1) {
+            throw std::system_error();
+        }
     }
     this->writefd = -1;
     this->readfd = -1;
@@ -51,22 +53,22 @@ NamedPipe::~NamedPipe()
         close(writefd);
     if (readfd != -1)
         close(readfd);
-    remove(this->fifo.data());
 }
 void NamedPipe::openPipe()
 {
     if (this->type == READ) {
         readfd = open(fifo.data(), O_RDONLY);
         if (readfd < 0)
-            throw(Plazza::PlazzaException(""));
+            throw(Plazza::PlazzaException("Error while oppenning read " + fifo));
     } else {
         writefd = open(fifo.data(), O_WRONLY);
         if (writefd < 0)
-            throw(Plazza::PlazzaException(""));
+            throw(Plazza::PlazzaException("Error while oppenning write " + fifo));
     }
 }
 void NamedPipe::send(std::string msg)
 {
+    /* std::cout << "[SENT] " << msg << std::endl; */
     write(this->writefd, msg.data(), msg.size());
 }
 
@@ -74,6 +76,7 @@ std::string NamedPipe::get()
 {
     char buf[10] = "\0\0\0\0\0\0\0\0\0";
     read(readfd, buf, 9);
+    /* std::cout << "[RECEIVED] " << buf << std::endl; */
     return buf;
 }
 

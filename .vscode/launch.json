@@ -5,13 +5,23 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "lldb",
+            "name": "(gdb) Launch",
+            "type": "cppdbg",
             "request": "launch",
-            "name": "Debug",
             "program": "${workspaceFolder}/plazza",
-            "args": ["2", "5", "2000"],
+            "args": ["2", "3", "2000"],
+            "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
-            "preLaunchTask": "Build Debug"
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
         }
     ]
 }
