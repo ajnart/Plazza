@@ -72,6 +72,25 @@ void NamedPipe::send(std::string msg)
     write(this->writefd, msg.data(), msg.size());
 }
 
+std::string& NamedPipe::unpack(std::string& src)
+{
+    return src;
+}
+
+std::string& NamedPipe::pack(std::string& src)
+{
+    return src;
+}
+
+std::istream& operator>>(std::istream& input, NamedPipe&)
+{
+    return input;
+}
+std::ostream& operator<<(std::ostream& output, const NamedPipe&)
+{
+    return output;
+}
+
 std::string NamedPipe::get()
 {
     char buf[10] = "\0\0\0\0\0\0\0\0\0";

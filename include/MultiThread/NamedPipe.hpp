@@ -38,6 +38,8 @@ class NamedPipe {
     NamedPipe& operator=(NamedPipe const& to_copy) = delete;
     NamedPipe& operator=(NamedPipe&& to_move);
 
+    std::string &pack(std::string& src);
+    std::string &unpack(std::string& src);
     void send(std::string msg);
     std::string get();
     bool tryGet(std::string& save);
@@ -50,3 +52,5 @@ class NamedPipe {
     std::string fifo;
 };
 
+std::istream& operator>>(std::istream& input, NamedPipe&);
+std::ostream& operator<<(std::ostream& output, const NamedPipe&);
