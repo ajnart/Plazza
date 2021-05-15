@@ -19,17 +19,19 @@ class Logger {
         ~Logger() = default;
         static void log(std::string message)
         {
-            std::ofstream out("logs.log");
-            out << "[I]" << message;
+            std::ofstream out("logs.log", std::fstream::app);
+            out << "[I] " << message << std::endl;
             std::cout << message << std::endl;
             out.close();
         }
         static void debuglog(std::string message)
         {
-            std::ofstream out("logs.log");
-            out << "[D]" << message;
+            #ifdef __DEBUG
+            std::ofstream out("logs.log", std::fstream::app);
+            out << "[D] " << message << std::endl;
             std::cout << message << std::endl;
             out.close();
+            #endif
         }
 };
 
