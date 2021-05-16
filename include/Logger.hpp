@@ -13,25 +13,37 @@
 #include <iostream>
 #include <sstream>
 
+constexpr bool DEBUG_PRINTS = true;
+
 class Logger {
     public:
         Logger() = default;
         ~Logger() = default;
-        static void log(std::string message)
+        static void log(const std::string &message)
         {
             std::ofstream out("logs.log", std::fstream::app);
             out << "[I] " << message << std::endl;
             std::cout << message << std::endl;
             out.close();
         }
-        static void debuglog(std::string message)
+        static void debuglog(const std::string &message)
         {
-            #ifdef __DEBUG
             std::ofstream out("logs.log", std::fstream::app);
             out << "[D] " << message << std::endl;
             std::cout << message << std::endl;
             out.close();
-            #endif
+        }
+        static void logfile(const std::string &message) {
+            std::ofstream out("logs.log", std::fstream::app);
+            out << "[I] " << message << std::endl;
+            out.close();
+        }
+        static void logIPC(const std::string& message)
+        {
+            std::ofstream out("IPC.log", std::fstream::app);
+            out << "[IPC] " << message << std::endl;
+            std::cout << message << std::endl;
+            out.close();
         }
 };
 
