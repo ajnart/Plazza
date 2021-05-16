@@ -6,6 +6,7 @@
 */
 
 #include "Reception.hpp"
+#include "Logger.hpp"
 
 #include <cstdint>
 #include <string.h>
@@ -54,11 +55,9 @@ void Reception::printStatus() noexcept
 {
     int idx = 1;
     if (kitchens.empty())
-        std::cerr
-            << "Couldn't print status. No kitchens are currently avilable."
-            << std::endl;
+        Logger::LogError("Couldn't print status. No kitchens are currently avilable.");
     for (auto& i: kitchens) {
-        std::cout << "Kitchen #" << idx << std::endl;
+        Logger::log("Kitchen #" + std::to_string(idx));
         idx++;
         i.printStatus();
     }
@@ -66,15 +65,13 @@ void Reception::printStatus() noexcept
 
 static void printHelp()
 {
-    std::cout << "Pizza ordering MUST respect the following grammar:"
-              << std::endl
-              << "S := TYPE SIZE NUMBER[; TYPE SIZE NUMBER]* TYPE :"
-              << std::endl
-              << "Type\t= [a..zA..Z] + SIZE :" << std::endl
-              << "Size\t= S | M | L | XL | XXL NUMBER :" << std::endl
-              << "Number\t= x[1..9][0..9] *" << std::endl
-              << "Ordering example which is grammatically valid:" << std::endl
-              << "regina XXL x2; fantasia M x3; margarita S x1" << std::endl;
+    Logger::log("Pizza ordering MUST respect the following grammar:\n"
+                "S := TYPE SIZE NUMBER[; TYPE SIZE NUMBER]* TYPE :\n"
+                "Type\t= [a..zA..Z] + SIZE :\n"
+                "Size\t= S | M | L | XL | XXL NUMBER :\n"
+                "Number\t= x[1..9][0..9] *\n"
+                "Ordering example which is grammatically valid:\n"
+                "regina XXL x2; fantasia M x3; margarita S x1");
 }
 
 PizzaCmd_t Reception::getCommandFromString(const std::string str)
@@ -141,7 +138,7 @@ Action Reception::checkLine(std::string input) noexcept
         try {
             Commands.push_back(getCommandFromString(token));
         } catch (PlazzaException& e) {
-            std::cerr << e.what();
+            Logger::LogError(e.what());
             Commands.clear();
             return Action::NONE;
         }
@@ -202,13 +199,14 @@ int Reception::run() noexcept
 {
     std::string line;
     Action action = Action::NONE;
-    std::cout << "$> ";
+    Logger::log("$> ", false, true);
     while (getline(std::cin, line)) {
+        Logger::logfile(line);
         CheckKichenActivity();
         try {
             action = this->checkLine(line);
         } catch (PlazzaException& e) {
-            std::cerr << e.what() << std::endl;
+            Logger::LogError(e.what());
         }
         switch (action) {
             case Action::EXIT:
@@ -228,9 +226,9 @@ int Reception::run() noexcept
         }
         // make algo with each elem of _Commands for (auto const &elem :
         // commands)
-        std::cout << "\n$> ";
+        Logger::log("\n$> ", false, true);
     }
-    std::cout << "[" << errno << "]" << std::endl;
+    Logger::log("[" + std::to_string(errno) + "]");
     return 0;
 }
 } // namespace Plazza

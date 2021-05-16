@@ -8,6 +8,7 @@
 #include "Kitchen.hpp"
 #include "PlazzaException.hpp"
 #include <algorithm>
+#include "Logger.hpp"
 #include <chrono>
 #include <iostream>
 #include <tuple>
@@ -27,28 +28,23 @@ Kitchen::Kitchen(params_t params, int id) :
     this->Stock.refill();
     this->Stock.refill();
     this->Stock.refill();
-    std::cout << std::boolalpha;
 }
 
 Kitchen::~Kitchen()
 {
-    std::cout << "!!!!! KITCHEN " << id << " DESTROYED !!!!!!\n";
 }
 
 void Kitchen::status(void) noexcept
 {
     Plazza::Ingredients_t i = this->Stock.getIngredients();
-    std::cout << "Ingredients:\n"
-              << "D:" << i.Does << "\tT:" << i.Tomatoes << "\tG:" << i.Gruyere
-              << std::endl
-              << "H:" << i.Ham << "\tM:" << i.Mushrooms << "\tS:" << i.Steak
-              << std::endl
-              << "E:" << i.Eggplant << "\tGC:" << i.GoatCheese
-              << "\tCL:" << i.ChiefLove << std::endl;
+    Logger::log("Ingredients:\n"
+              "D:" + std::to_string(i.Does) + "\tT:" + std::to_string(i.Tomatoes) + "\tG:" + std::to_string(i.Gruyere) + "\n"
+              "H:" + std::to_string(i.Ham) + "\tM:" + std::to_string(i.Mushrooms) + "\tS:" + std::to_string(i.Steak) + "\n"
+              "E:" + std::to_string(i.Eggplant) + "\tGC:" + std::to_string(i.GoatCheese)
+               + "\tCL:" + std::to_string(i.ChiefLove));
 
     for (auto& i: this->Cooks)
-        std::cout << (i.isBusy() ? "\033[31m •\033[0m" : "\033[32m •\033[0m");
-    std::cout << std::endl;
+        Logger::log((i.isBusy() ? "\033[31m •\033[0m" : "\033[32m •\033[0m"), false);
     this->write->send("OK");
 }
 
@@ -89,7 +85,7 @@ attr getPizzaAttributes(const Pizza& pizza)
 void Kitchen::handlePizza(const std::string& name)
 {
     if (name.empty()) {
-        std::cout << "empty name" << std::endl;
+        Logger::log("Empty Pizza name caught by kitchen");
     }
     if (this->pizzaNb > this->cookNb) {
         this->write->send("FALSE");
@@ -100,7 +96,7 @@ void Kitchen::handlePizza(const std::string& name)
     try {
         pizza = PizzaType.at(name);
     } catch (std::out_of_range&) {
-        std::cout << "unknown pizza: " << name << std::endl;
+        Logger::log("Unknown pizza: " + name);
         return;
     }
     this->queue.push(pizza);

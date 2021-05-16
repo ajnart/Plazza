@@ -68,7 +68,6 @@ void NamedPipe::openPipe()
 }
 void NamedPipe::send(std::string msg)
 {
-    /* std::cout << "[SENT] " << msg << std::endl; */
     write(this->writefd, msg.data(), msg.size());
 }
 
@@ -95,7 +94,6 @@ std::string NamedPipe::get()
 {
     char buf[10] = "\0\0\0\0\0\0\0\0\0";
     read(readfd, buf, 9);
-    /* std::cout << "[RECEIVED] " << buf << std::endl; */
     return buf;
 }
 

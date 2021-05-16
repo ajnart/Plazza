@@ -53,7 +53,7 @@ int KitchenConnect::getPizzaNbr()
         int nb = std::stoi(tmp);
         return nb;
     } catch (std::invalid_argument&) {
-        std::cout << tmp << " is an invalid nb." << std::endl;
+        Logger::LogError(tmp + " is an invalid pizza number.");
     }
     return 99;
 }

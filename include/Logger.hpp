@@ -19,11 +19,29 @@ class Logger {
     public:
         Logger() = default;
         ~Logger() = default;
-        static void log(const std::string &message)
+        static void LogError(const std::string &message)
         {
             std::ofstream out("logs.log", std::fstream::app);
-            out << "[I] " << message << std::endl;
-            std::cout << message << std::endl;
+            out << "[E] " << message << std::endl;
+            std::cerr << message << std::endl;
+            out.close();
+        }
+        static void log(const std::string &message, bool newline = true, bool silent = false)
+        {
+            std::ofstream out("logs.log", std::fstream::app);
+            if (silent)
+            {
+                out << message;
+                std::cout << message;
+            }
+            else if (newline) {
+                out << "[I] " << message << std::endl;
+                std::cout << message << std::endl;
+            }
+            else {
+                out << "[I] " << message;
+                std::cout << message ;
+            }
             out.close();
         }
         static void debuglog(const std::string &message)
@@ -35,7 +53,7 @@ class Logger {
         }
         static void logfile(const std::string &message) {
             std::ofstream out("logs.log", std::fstream::app);
-            out << "[I] " << message << std::endl;
+            out << message << std::endl;
             out.close();
         }
         static void logIPC(const std::string& message)
