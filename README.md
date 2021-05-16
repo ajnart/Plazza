@@ -1,14 +1,9 @@
 ## B4 - Concurrent Programming
 
-## B-CCP-
-
 # Plazza
 
-## Whosaidanythingaboutpizzas?
+## Who said anything about pizzas?
 
-```
-2.
-```
 
 # Plazza
 
@@ -40,15 +35,15 @@ Before you get started, should take some time to read up on the following tools 
 
 Here is an overview of the expected architecture:
 
-## The reception_ _ _ _ _ _ _ _ _ _ _
+## The reception
 
 The reception must be started using the command line the following way:
 
-### ∇ Terminal - + x
 
 ```
 ∼/B-CCP-400> ./plazza 2 5 2000
 ```
+
 - The first parameter is a multiplier for the cooking time of the pizzas. It is used to examine your program
     more easily, so it must **INEVITABLY** be implemented. Otherwise it will not be possible to grade you.
     Moreover this parameter **MUST** be able to accept numbers with value in between 0 to 1 to obtain a
@@ -95,7 +90,7 @@ When an order is ready, the reception MUST display the information to the user a
 file on top of other dislpays should be a good idea... )
 
 
-## Kitchens_ _ _ _ _ _ _ _ _ _ _
+## Kitchens
 
 Kitchens are child processes of the reception. Kitchens are created progressively, when needed. Kitchens
 possesses a predetermined number of cooks that is defined when the program is started.
@@ -136,7 +131,7 @@ Creation and destruction of kitchen means that there are communication problems 
 need to be sorted out and watched over very closely...
 ```
 
-## Pizzas_ _ _ _ _ _ _ _ _ _ _
+## Pizzas
 
 As explained earlier, the reception must allocate order between kitchens, pizza by pizza.
 For example if one command is about 7 margaritas, these margaritas will be dispatched between 7 different
@@ -145,6 +140,7 @@ kitchens (if there are 7 kitchen running at this point in time).
 When the information is flowing through the choosen IPC, information about the command and pizzas
 return MUST be serialized. You MUST use the following definition of value:
 
+```cpp
 enum PizzaType
 {
 Regina = 1,
@@ -161,6 +157,7 @@ L = 4,
 XL = 8,
 XXL = 16
 };
+```
 
 Within communication, pizza are passing through, using the form of an opaque object type of your choice.
 It MUST be possible to use operatorspackandunpackon this type to serialize or to unserialize data
@@ -171,11 +168,11 @@ You MUST manage the follwing pizzas:
 - Americana: Contains doe, tomato, gruyere, steak. Baked in 2 secs * multiplier.
 - Fantasia: Contains doe, tomato, eggplant, goat cheese and chief love. Baked in 4 secs * multiplier.
 
-```
+
 You must ask yourself as early as possible how to represent time. This can save you lots
 of time...
-```
-```
+
+
 Being able to add new pizzas very simply (abstraction?) is a very easy bonus to get.
-```
+
 
