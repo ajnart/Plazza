@@ -26,9 +26,12 @@ params_t ArgParse::ParseArgs(char** args)
     params_t params;
 
     try {
-        params.multiplier = std::stof(args[1]);
-        params.chefs_nbr = std::stoi(args[2]);
-        params.stock_refill_time = std::stof(args[3]);
+        params.multiplier =
+            args[1][0] == '-' ? std::stof(args[1] + 1) : std::stof(args[1]);
+        params.chefs_nbr =
+            args[1][0] == '-' ? std::stoi(args[2] + 1) : std::stoi(args[2]);
+        params.stock_refill_time =
+            args[1][0] == '-' ? std::stof(args[3] + 1) : std::stof(args[3]);
     } catch (std::invalid_argument) {
         throw Plazza::PlazzaException(
             "Invalid arguments. Do ./plazza -h to learn about argument formats.");
