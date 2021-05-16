@@ -23,7 +23,7 @@ BUILD_DIR		= build
 
 SOURCE			=  $(shell find $(SOURCE_DIR) -name "*.cpp")
 
-TEST_SOURCE			= $(shell find $(SOURCE_DIR) -name "*.cpp")
+TEST_SOURCE			= $(shell find $(SOURCE_DIR) -name "*.cpp" -not -name "main.cpp")
 
 OBJ		=	$(patsubst $(SOURCE_DIR)/%.cpp,$(BUILD_DIR)/%.o,$(SOURCE))
 TEST_OBJ		=	$(patsubst $(SOURCE_DIR)/%.cpp,$(BUILD_DIR)/%.o,$(TEST_SOURCE))
@@ -39,7 +39,7 @@ ifneq (,$(findstring debug,$(MAKECMDGOALS)))
 endif
 
 ifneq (,$(findstring tests,$(MAKECMDGOALS)))
-	CPPFLAGS += -D__TESTS -lgtest -lgtest_main --coverage
+	CPPFLAGS += -D__TESTS -lgtest_main -lgtest --coverage
 endif
 
 all::	$(NAME)
