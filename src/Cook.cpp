@@ -9,6 +9,7 @@
 #include <chrono>
 #include <iostream>
 #include <unistd.h>
+#include "Logger.hpp"
 
 namespace Plazza
 {
@@ -43,8 +44,6 @@ void Cook::baking(int time)
 {
     std::this_thread::sleep_for(std::chrono::milliseconds(time));
     this->busy.store(false, std::memory_order_relaxed);
-#ifdef __DEBUG
-    std::cout << "\r A cook has finished baking a pizza." << std::endl;
-#endif
+    Logger::logfile("\r A cook has finished baking a pizza. Cooked for" + std::to_string(time) + " ms.\n");
 }
 }

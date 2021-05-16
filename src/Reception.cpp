@@ -138,11 +138,10 @@ Action Reception::checkLine(std::string input) noexcept
     auto commands = split(input, ';');
     for (auto& token: commands) {
         token = trim(token);
-        std::cout << token << std::endl;
         try {
             Commands.push_back(getCommandFromString(token));
         } catch (PlazzaException& e) {
-            std::cout << e.what();
+            std::cerr << e.what();
             Commands.clear();
             return Action::NONE;
         }
@@ -209,7 +208,7 @@ int Reception::run() noexcept
         try {
             action = this->checkLine(line);
         } catch (PlazzaException& e) {
-            std::cout << e.what() << std::endl;
+            std::cerr << e.what() << std::endl;
         }
         switch (action) {
             case Action::EXIT:

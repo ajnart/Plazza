@@ -30,7 +30,7 @@ int main(int ac, char** av)
     try {
         params = ArgParse::ParseArgs(av);
     } catch (Plazza::PlazzaException& exp) {
-        std::cout << exp.what();
+        std::cerr << exp.what();
         return 84;
     }
 
