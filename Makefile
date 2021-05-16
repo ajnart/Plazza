@@ -23,7 +23,7 @@ BUILD_DIR		= build
 
 SOURCE			=  $(shell find $(SOURCE_DIR) -name "*.cpp")
 
-TEST_SOURCE			= $(shell find $(SOURCE_DIR) -name "*.cpp" -not -name "main.cpp")
+TEST_SOURCE			= $(shell find $(SOURCE_DIR) -name "*.cpp")
 
 OBJ		=	$(patsubst $(SOURCE_DIR)/%.cpp,$(BUILD_DIR)/%.o,$(SOURCE))
 TEST_OBJ		=	$(patsubst $(SOURCE_DIR)/%.cpp,$(BUILD_DIR)/%.o,$(TEST_SOURCE))
@@ -70,6 +70,7 @@ $(BUILD_DIR)%/.:
 .PRECIOUS:			$(BUILD_DIR)/. $(BUILD_DIR)%/.
 
 clean:
+	@rm -rfv $(shell find $(BUILD_DIR) -name "*.gc*")
 	@rm -rfv $(shell find $(BUILD_DIR) -name "*.o")
 	@rm -rfv $(shell find $(BUILD_DIR) -name "*.d")
 	@rm -rfv $(shell find -name "vgcore.*")
@@ -83,7 +84,7 @@ fclean:	clean
 	@rm -fv $(NAME) $(NAME).debug $(NAME).gtest
 
 tests_run: $(OBJ)
-	@$(CXX) -o $(NAME).gtest $(TEST_OBJ) $(CPPFLAGS) -lgtest -lgtest_main -pthread $(LDLIBS) tests/*.cpp
+	@$(CXX) -o $(NAME).gtest $(TEST_OBJ) $(CPPFLAGS) -std=c++17 -lgtest_main -lgtest -pthread $(LDLIBS) tests/*.cpp
 	@$(call rich_echo,"🔨","Unit tests building done")
 	./$(NAME).gtest
 	$(CLEAR)
