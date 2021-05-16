@@ -1,0 +1,252 @@
+$> $> $> $> $> $> $> $> $> help
+
+$> 
+
+$> help
+
+$> status
+[E] Couldn't print status. No kitchens are currently avilable.
+
+$> $> help
+[I] Pizza ordering MUST respect the following grammar:
+S := TYPE SIZE NUMBER[; TYPE SIZE NUMBER]* TYPE :
+Type	= [a..zA..Z] + SIZE :
+Size	= S | M | L | XL | XXL NUMBER :
+Number	= x[1..9][0..9] *
+Ordering example which is grammatically valid:
+regina XXL x2; fantasia M x3; margarita S x1
+
+$> $> help
+[I] Pizza ordering MUST respect the following grammar:
+S := TYPE SIZE NUMBER[; TYPE SIZE NUMBER]* TYPE :
+Type	= [a..zA..Z] + SIZE :
+Size	= S | M | L | XL | XXL NUMBER :
+Number	= x[1..9][0..9] *
+Ordering example which is grammatically valid:
+regina XXL x2; fantasia M x3; margarita S x1
+
+$> $> help
+[I] Pizza ordering MUST respect the following grammar:
+S := TYPE SIZE NUMBER[; TYPE SIZE NUMBER]* TYPE :
+Type	= [a..zA..Z] + SIZE :
+Size	= S | M | L | XL | XXL NUMBER :
+Number	= x[1..9][0..9] *
+Ordering example which is grammatically valid:
+regina XXL x2; fantasia M x3; margarita S x1
+
+$> $> help
+[I] Pizza ordering MUST respect the following grammar:
+S := TYPE SIZE NUMBER[; TYPE SIZE NUMBER]* TYPE :
+Type	= [a..zA..Z] + SIZE :
+Size	= S | M | L | XL | XXL NUMBER :
+Number	= x[1..9][0..9] *
+Ordering example which is grammatically valid:
+regina XXL x2; fantasia M x3; margarita S x1
+
+$> $> he;[
+[E] Invalid command. Type 'help' to view help.
+
+$> help
+[I] Pizza ordering MUST respect the following grammar:
+S := TYPE SIZE NUMBER[; TYPE SIZE NUMBER]* TYPE :
+Type	= [a..zA..Z] + SIZE :
+Size	= S | M | L | XL | XXL NUMBER :
+Number	= x[1..9][0..9] *
+Ordering example which is grammatically valid:
+regina XXL x2; fantasia M x3; margarita S x1
+
+$> help
+[I] Pizza ordering MUST respect the following grammar:
+S := TYPE SIZE NUMBER[; TYPE SIZE NUMBER]* TYPE :
+Type	= [a..zA..Z] + SIZE :
+Size	= S | M | L | XL | XXL NUMBER :
+Number	= x[1..9][0..9] *
+Ordering example which is grammatically valid:
+regina XXL x2; fantasia M x3; margarita S x1
+
+$> $> help
+[I] Pizza ordering MUST respect the following grammar:
+S := TYPE SIZE NUMBER[; TYPE SIZE NUMBER]* TYPE :
+Type	= [a..zA..Z] + SIZE :
+Size	= S | M | L | XL | XXL NUMBER :
+Number	= x[1..9][0..9] *
+Ordering example which is grammatically valid:
+regina XXL x2; fantasia M x3; margarita S x1
+
+$> $> help
+[I] Pizza ordering MUST respect the following grammar:
+S := TYPE SIZE NUMBER[; TYPE SIZE NUMBER]* TYPE :
+Type	= [a..zA..Z] + SIZE :
+Size	= S | M | L | XL | XXL NUMBER :
+Number	= x[1..9][0..9] *
+Ordering example which is grammatically valid:
+regina XXL x2; fantasia M x3; margarita S x1
+
+$> $> $> help
+
+$> status
+[E] Couldn't print status. No kitchens are currently avilable.
+
+$> help
+
+$> $> help
+$> help
+[I] Pizza ordering MUST respect the following grammar:
+S := TYPE SIZE NUMBER[; TYPE SIZE NUMBER]* TYPE :
+Type	= [a..zA..Z] + SIZE :
+Size	= S | M | L | XL | XXL NUMBER :
+Number	= x[1..9][0..9] *
+Ordering example which is grammatically valid:
+regina XXL x2; fantasia M x3; margarita S x1
+
+$> $> help
+[I] Pizza ordering MUST respect the following grammar:
+S := TYPE SIZE NUMBER[; TYPE SIZE NUMBER]* TYPE :
+Type	= [a..zA..Z] + SIZE :
+Size	= S | M | L | XL | XXL NUMBER :
+Number	= x[1..9][0..9] *
+Ordering example which is grammatically valid:
+regina XXL x2; fantasia M x3; margarita S x1
+
+$> help
+[I] Pizza ordering MUST respect the following grammar:
+S := TYPE SIZE NUMBER[; TYPE SIZE NUMBER]* TYPE :
+Type	= [a..zA..Z] + SIZE :
+Size	= S | M | L | XL | XXL NUMBER :
+Number	= x[1..9][0..9] *
+Ordering example which is grammatically valid:
+regina XXL x2; fantasia M x3; margarita S x1
+
+$> $> help
+[I] Pizza ordering MUST respect the following grammar:
+S := TYPE SIZE NUMBER[; TYPE SIZE NUMBER]* TYPE :
+Type	= [a..zA..Z] + SIZE :
+Size	= S | M | L | XL | XXL NUMBER :
+Number	= x[1..9][0..9] *
+Ordering example which is grammatically valid:
+regina XXL x2; fantasia M x3; margarita S x1
+
+$> $> help
+[I] Les commandes de pizzas doivent respecter la grammaire suivante:
+S := TYPE SIZE NUMBER[; TYPE SIZE NUMBER]* TYPE :
+Type	= [a..zA..Z] + SIZE :
+Size	= S | M | L | XL | XXL NUMBER :
+Number	= x[1..9][0..9] *
+Ordering example which is grammatically valid:
+regina XXL x2; fantasia M x3; margarita S x1
+
+$> 
+
+$> [I] [0]
+$> help
+[I] Les commandes de pizzas doivent respecter la grammaire suivante:
+S := TYPE TAILLE NOMBRE[; TYPE TAILLE NOMBRE]* TYPE :
+Type	= [a..zA..Z] + TAILLE :
+Taille	= S | M | L | XL | XXL NOMBRE :
+Nombre	= x[1..9][0..9] *
+Example de commande respectant la grammaire précedemment définie:
+reine XXL x2; fantasia M x3; margarita S x1
+
+$> [E] Wrong number of arguments. Do ./plazza -h to learn about the program.
+[I] Utilisation:
+- c:	multiplicateur du temps de cuisson de chaque pizza.
+- n:	Le nombre de cuisiniers par cuisine.
+- t:	tLe temps, en millisecondes, pris par une cuisine pour renouveller son stock d'ingredients.
+Exemple : ./plazza 2 5 2000
+$> $> $> $> [E] Wrong number of arguments. Do ./plazza -h to learn about the program.
+[I] This is being logged.
+[I] This is being logged.
+[I] This is being logged.
+[E] Wrong number of arguments. Do ./plazza -h to learn about the program.
+[I] Usage:
+- c:	multiplier for the cooking time of the pizzas.
+- n:	the number of cooks per kitchen.
+- t:	the time in milliseconds, used by the kitchen stock to replace ingredients.
+Example : ./plazza 2 5 2000
+$> help
+[I] Pizza ordering MUST respect the following grammar:
+S := TYPE SIZE NUMBER[; TYPE SIZE NUMBER]* TYPE :
+Type	= [a..zA..Z] + SIZE :
+Size	= S | M | L | XL | XXL NUMBER :
+Number	= x[1..9][0..9] *
+Ordering example which is grammatically valid:
+regina XXL x2; fantasia M x3; margarita S x1
+
+$> status
+[E] Couldn't print status. No kitchens are currently avilable.
+
+$> regina XXL x2; fantasia M x3; margarita S x1
+
+$> 
+
+$>  A cook has finished baking a pizza. Cooked for4000 ms.
+
+ A cook has finished baking a pizza. Cooked for4000 ms.
+
+status
+[I] Kitchen #1
+[I] Ingredients:
+D:10	T:10	G:10
+H:14	M:14	S:16
+E:13	GC:13	CL:13
+[I] [31m •[0m[I] [32m •[0m[I] [31m •[0m[I] [31m •[0m[I] [31m •[0m
+$>  A cook has finished baking a pizza. Cooked for2000 ms.
+
+status
+[I] Kitchen #1
+[I] Ingredients:
+D:14	T:14	G:14
+H:18	M:18	S:20
+E:17	GC:17	CL:17
+[I] [32m •[0m[I] [32m •[0m[I] [31m •[0m[I] [31m •[0m[I] [31m •[0m
+$> status
+[I] Kitchen #1
+[I] Ingredients:
+D:17	T:17	G:17
+H:21	M:21	S:23
+E:20	GC:20	CL:20
+[I] [32m •[0m[I] [32m •[0m[I] [31m •[0m[I] [31m •[0m[I] [31m •[0m
+$>  A cook has finished baking a pizza. Cooked for8000 ms.
+
+ A cook has finished baking a pizza. Cooked for8000 ms.
+
+ A cook has finished baking a pizza. Cooked for8000 ms.
+
+status
+[I] Kitchen #1
+[I] Ingredients:
+D:20	T:20	G:20
+H:24	M:24	S:26
+E:23	GC:23	CL:23
+[I] [32m •[0m[I] [32m •[0m[I] [32m •[0m[I] [32m •[0m[I] [32m •[0m
+$> status
+[I] Kitchen #1
+[I] Ingredients:
+D:23	T:23	G:23
+H:27	M:27	S:29
+E:26	GC:26	CL:26
+[I] [32m •[0m[I] [32m •[0m[I] [32m •[0m[I] [32m •[0m[I] [32m •[0m
+$> status
+[I] Kitchen #1
+[I] Ingredients:
+D:28	T:28	G:28
+H:32	M:32	S:34
+E:31	GC:31	CL:31
+[I] [32m •[0m[I] [32m •[0m[I] [32m •[0m[I] [32m •[0m[I] [32m •[0m
+$> 
+[I] Kitchen #1 was closed due to inactivity.
+
+$> status
+[E] Couldn't print status. No kitchens are currently avilable.
+
+$> 
+
+$> exit
+[E] Wrong number of arguments. Do ./plazza -h to learn about the program.
+$> [E] Wrong number of arguments. Do ./plazza -h to learn about the program.
+[I] This is being logged.
+[E] Wrong number of arguments. Do ./plazza -h to learn about the program.
+[I] This is being logged.
+[E] Wrong number of arguments. Do ./plazza -h to learn about the program.
+[I] This is being logged.
+[E] Wrong number of arguments. Do ./plazza -h to learn about the program.
