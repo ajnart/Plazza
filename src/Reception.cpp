@@ -38,16 +38,16 @@ Reception::~Reception()
         it->stop();
 }
 
-std::vector<std::string> Reception::split(const std::string& s,
-                                          char block) noexcept
+std::vector<std::string> Reception::split(const std::string& src,
+                                          char delimiter) noexcept
 {
-    std::vector<std::string> tokens;
-    std::string token;
-    std::istringstream stream(s);
+    std::vector<std::string> res;
+    std::string tmp;
+    std::istringstream streamator(src);
 
-    while (std::getline(stream, token, block))
-        tokens.push_back(token);
-    return tokens;
+    while (std::getline(streamator, tmp, delimiter))
+        res.push_back(tmp);
+    return res;
 }
 
 void Reception::printStatus() noexcept
