@@ -13,8 +13,12 @@
 #include "Cook.hpp"
 #include "FoodStock.hpp"
 #include "MultiThread/NamedPipe.hpp"
-#include "MultiThread/SafeQueue.hpp"
 #include "Pizza.hpp"
+#include <iostream>
+#include <memory>
+#include <mutex>
+#include <optional>
+#include <queue>
 
 namespace Plazza
 {
@@ -22,7 +26,7 @@ class Kitchen {
   public:
     Kitchen(params_t params, int id);
     Kitchen(Kitchen const& to_copy) = delete;
-    Kitchen(Kitchen&& to_move) = default;
+    Kitchen(Kitchen&& to_move) = delete;
 
     ~Kitchen();
 
@@ -51,33 +55,28 @@ class Kitchen {
      */
     void handlePizza(const std::string& name);
 
-    /* void stop() noexcept */
-    /* { */
-    /*     this->running = false; */
-    /* } */
-
     bool getlineAsync();
+    // Checks if any of the cooks are busy
+    bool AreCooksActive();
+    bool IsKitchenActive();
+    // Checks if all the cooks have been out of work for 4 seconds.
+    bool ShouldKitchenClose();
 
     bool CookManager(std::tuple<Pizza, Ingredients_t, int>);
-    /*
-     * create a thread with given function, and self
-     */
     /*
      * have a clock, and call for refill every x ms
      */
     std::vector<Cook> Cooks;
     bool tryRefill() noexcept;
-    // SafeQueue<Pizza> Queue;
     int pizzaNb = 0;
     const int cookNb = 0;
     const int refillTime;
     const int CookTimeMultiplier;
     int id;
     bool running = true;
-    NamedPipe read;
-    NamedPipe write;
+    std::optional<NamedPipe> read;
+    std::optional<NamedPipe> write;
     std::queue<Pizza> queue;
-    // std::thread t;
     FoodStock Stock;
 };
 } // namespace Plazza

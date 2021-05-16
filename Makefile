@@ -23,7 +23,7 @@ BUILD_DIR		= build
 
 SOURCE			=  $(shell find $(SOURCE_DIR) -name "*.cpp")
 
-TEST_SOURCE			= $(shell find $(SOURCE_DIR) -name "*.cpp" -not -name "main.cpp")
+TEST_SOURCE			= $(shell find $(SOURCE_DIR) -name "*.cpp")
 
 OBJ		=	$(patsubst $(SOURCE_DIR)/%.cpp,$(BUILD_DIR)/%.o,$(SOURCE))
 TEST_OBJ		=	$(patsubst $(SOURCE_DIR)/%.cpp,$(BUILD_DIR)/%.o,$(TEST_SOURCE))
@@ -31,7 +31,7 @@ TEST_OBJ		=	$(patsubst $(SOURCE_DIR)/%.cpp,$(BUILD_DIR)/%.o,$(TEST_SOURCE))
 NAME	=	plazza
 
 CPPFLAGS	+=	-I./include
-CXXFLAGS 	+= -O2 -W -Wall -Wextra
+CXXFLAGS 	+= -O2 -W -Wall -Wextra -std=c++17
 LDLIBS 		+= -lpthread -lrt
 
 ifneq (,$(findstring debug,$(MAKECMDGOALS)))
@@ -52,14 +52,14 @@ message:
 	@echo -e "\e[1m[INFO]\t$(GREEN)Compilation successful ✔$(END)"
 
 $(NAME): $(OBJ)
-	@$(CXX) -o $@ $^ $(CXXFLAGS) $(LDLIBS)
+	@$(CXX) -o $@ $^ $(LDLIBS)
 
 .SECONDEXPANSION:
 $(BUILD_DIR)/%.o: override CPPFLAGS += -MT $@ -MMD -MP -MF $(@:.o=.d)
 $(BUILD_DIR)/%.o: $(SOURCE_DIR)/%.cpp | $$(@D)/.
 	@$(call rich_echo,"CXX","$@")
 	@mkdir -p $(@D)
-	@$(CXX) $(CPPFLAGS) -c $< -o $@
+	@$(CXX) $(CPPFLAGS) -c $< -o $@ $(CXXFLAGS)
 
 $(BUILD_DIR)/.:
 		@mkdir -p $@
@@ -70,6 +70,7 @@ $(BUILD_DIR)%/.:
 .PRECIOUS:			$(BUILD_DIR)/. $(BUILD_DIR)%/.
 
 clean:
+	@rm -rfv $(shell find $(BUILD_DIR) -name "*.gc*")
 	@rm -rfv $(shell find $(BUILD_DIR) -name "*.o")
 	@rm -rfv $(shell find $(BUILD_DIR) -name "*.d")
 	@rm -rfv $(shell find -name "vgcore.*")
@@ -83,7 +84,7 @@ fclean:	clean
 	@rm -fv $(NAME) $(NAME).debug $(NAME).gtest
 
 tests_run: $(OBJ)
-	@$(CXX) -o $(NAME).gtest $(TEST_OBJ) $(CPPFLAGS) -lgtest -lgtest_main -pthread $(LDLIBS) tests/*.cpp
+	@$(CXX) -o $(NAME).gtest $(TEST_OBJ) $(CPPFLAGS) -std=c++17 -lgtest_main -lgtest -pthread $(LDLIBS) tests/*.cpp
 	@$(call rich_echo,"🔨","Unit tests building done")
 	./$(NAME).gtest
 	$(CLEAR)

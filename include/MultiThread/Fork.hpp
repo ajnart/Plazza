@@ -15,4 +15,5 @@ class Fork {
     Fork() = default;
     ~Fork() = default;
     static int plazzaFork();
+    static int plazzaWait(int pid);
 };
