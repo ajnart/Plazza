@@ -8,18 +8,17 @@
 #ifndef RECEPTION_HPP_
 #define RECEPTION_HPP_
 
-#include "MultiThread/KitchenIPC.hpp"
+#include "MultiThread/KitchenConnect.hpp"
 #include "Pizza.hpp"
 #include <chrono>
 #include <iostream>
-#include <unordered_map>
-#include <map>
-#include <vector>
 #include <list>
+#include <map>
+#include <unordered_map>
+#include <vector>
 
 namespace Plazza
 {
-
 enum PizzaSize
 {
     S = 1,
@@ -40,7 +39,8 @@ enum Action
 
 struct PizzaCmd_t
 {
-    std::string type;
+    std::string type = "NULL";
+    PizzaSize size = S;
     int number;
 };
 
@@ -50,7 +50,7 @@ class Reception {
     Reception(Reception const& to_copy) = delete;
     Reception(Reception&& to_move) = delete;
 
-    ~Reception() = default;
+    ~Reception();
 
     Reception& operator=(Reception const& to_copy) = delete;
 
@@ -94,9 +94,10 @@ class Reception {
      */
     void assignToNewKitchen(PizzaCmd_t command);
 
-    std::vector<PizzaCmd_t> Commands;
-    std::list<KitchenIPC> kitchens;
+    void CheckKichenActivity();
 
+    std::vector<PizzaCmd_t> Commands;
+    std::list<KitchenConnect> kitchens;
     params_t params;
 };
 

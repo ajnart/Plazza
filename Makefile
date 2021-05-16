@@ -31,7 +31,7 @@ TEST_OBJ		=	$(patsubst $(SOURCE_DIR)/%.cpp,$(BUILD_DIR)/%.o,$(TEST_SOURCE))
 NAME	=	plazza
 
 CPPFLAGS	+=	-I./include
-CXXFLAGS 	+= -O2 -W -Wall -Wextra
+CXXFLAGS 	+= -O2 -W -Wall -Wextra -std=c++17
 LDLIBS 		+= -lpthread -lrt
 
 ifneq (,$(findstring debug,$(MAKECMDGOALS)))
@@ -52,14 +52,14 @@ message:
 	@echo -e "\e[1m[INFO]\t$(GREEN)Compilation successful ✔$(END)"
 
 $(NAME): $(OBJ)
-	@$(CXX) -o $@ $^ $(CXXFLAGS) $(LDLIBS)
+	@$(CXX) -o $@ $^ $(LDLIBS)
 
 .SECONDEXPANSION:
 $(BUILD_DIR)/%.o: override CPPFLAGS += -MT $@ -MMD -MP -MF $(@:.o=.d)
 $(BUILD_DIR)/%.o: $(SOURCE_DIR)/%.cpp | $$(@D)/.
 	@$(call rich_echo,"CXX","$@")
 	@mkdir -p $(@D)
-	@$(CXX) $(CPPFLAGS) -c $< -o $@
+	@$(CXX) $(CPPFLAGS) -c $< -o $@ $(CXXFLAGS)
 
 $(BUILD_DIR)/.:
 		@mkdir -p $@

@@ -8,6 +8,7 @@
 #include "Kitchen.hpp"
 #include "PlazzaException.hpp"
 #include <algorithm>
+#include "Logger.hpp"
 #include <chrono>
 #include <iostream>
 #include <tuple>
@@ -16,39 +17,40 @@
 namespace Plazza
 {
 Kitchen::Kitchen(params_t params, int id) :
+    Cooks(params.chefs_nbr),
     cookNb(params.chefs_nbr),
     refillTime(params.stock_refill_time),
-    CookTimeMultiplier(params.multiplier),
-    Cooks(params.chefs_nbr)
+    CookTimeMultiplier(params.multiplier)
 {
     this->id = id;
+    this->Stock.refill();
+    this->Stock.refill();
+    this->Stock.refill();
+    this->Stock.refill();
+    this->Stock.refill();
 }
 
 Kitchen::~Kitchen()
 {
-    std::cout << "!!!!! KITCHEN " << id << " DESTROYED !!!!!!" << std::endl;
 }
 
 void Kitchen::status(void) noexcept
 {
     Plazza::Ingredients_t i = this->Stock.getIngredients();
-    std::cout << "Ingredients:\n"
-              << "D:" << i.Does << "\tT:" << i.Tomatoes << "\tG:" << i.Gruyere
-              << std::endl
-              << "H:" << i.Ham << "\tM:" << i.Mushrooms << "\tS:" << i.Steak
-              << std::endl
-              << "E:" << i.Eggplant << "\tGC:" << i.GoatCheese
-              << "\tCL:" << i.ChiefLove << std::endl;
+    Logger::log("Ingredients:\n"
+              "D:" + std::to_string(i.Does) + "\tT:" + std::to_string(i.Tomatoes) + "\tG:" + std::to_string(i.Gruyere) + "\n"
+              "H:" + std::to_string(i.Ham) + "\tM:" + std::to_string(i.Mushrooms) + "\tS:" + std::to_string(i.Steak) + "\n"
+              "E:" + std::to_string(i.Eggplant) + "\tGC:" + std::to_string(i.GoatCheese)
+               + "\tCL:" + std::to_string(i.ChiefLove));
 
     for (auto& i: this->Cooks)
-        std::cout << (i.isBusy() ? "\033[31m •\033[0m" : "\033[32m •\033[0m");
-    std::cout << std::endl;
-    this->write.send("OK");
+        Logger::log((i.isBusy() ? "\033[31m •\033[0m" : "\033[32m •\033[0m"), false);
+    this->write->send("OK");
 }
 
 void Kitchen::getPizzaNbr() noexcept
 {
-    this->write.send(std::to_string(this->pizzaNb));
+    this->write->send(std::to_string(this->pizzaNb));
 }
 
 using attr = std::tuple<Pizza, Ingredients_t, int>;
@@ -84,17 +86,22 @@ attr getPizzaAttributes(const Pizza& pizza)
 void Kitchen::handlePizza(const std::string& name)
 {
     if (name.empty()) {
-        std::cout << "empty name" << std::endl;
+        Logger::log("Empty Pizza name caught by kitchen");
     }
     if (this->pizzaNb > this->cookNb) {
-        this->write.send("FALSE");
+        this->write->send("FALSE");
         return;
     }
-    this->write.send("TRUE");
-    Pizza pizza = PizzaType.at(name);
+    this->write->send("TRUE");
+    Pizza pizza;
+    try {
+        pizza = PizzaType.at(name);
+    } catch (std::out_of_range&) {
+        Logger::log("Unknown pizza: " + name);
+        return;
+    }
     this->queue.push(pizza);
     this->pizzaNb += 1;
-    attr attributes = getPizzaAttributes(pizza);
 }
 
 void Kitchen::stop()
@@ -102,25 +109,54 @@ void Kitchen::stop()
     running = false;
 }
 
+bool Kitchen::AreCooksActive()
+{
+    for (auto& i: this->Cooks)
+        if (i.isBusy())
+            return true;
+    return false;
+}
+
+bool Kitchen::ShouldKitchenClose()
+{
+    static auto t1 = std::chrono::high_resolution_clock::now();
+    auto t2 = std::chrono::high_resolution_clock::now();
+    if (AreCooksActive()) {
+        t1 = std::chrono::high_resolution_clock::now();
+        return false;
+    }
+    if (std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1) >=
+        std::chrono::milliseconds(4000)) {
+        return true;
+    }
+    return false;
+}
+
 void Kitchen::run()
 {
     std::string commandLine;
 
-    this->read.initPipe(id, NamedPipe::READ, false);
-    this->write.initPipe(id, NamedPipe::WRITE, false);
-    this->write.openPipe();
-    this->read.openPipe();
+    this->read = NamedPipe(id, NamedPipe::READ, false);
+    this->write = NamedPipe(id, NamedPipe::WRITE, false);
+    this->write->openPipe();
+    this->read->openPipe();
     while (this->running) {
         this->tryRefill();
-        if (this->read.tryGet(commandLine)) {
+        if (ShouldKitchenClose()) {
+            return;
+        }
+        if (this->read->tryGet(commandLine)) {
+            if (commandLine == "")
+                return;
             if (commandLine == "STATUS")
                 this->status();
             else if (commandLine == "PIZZANBR")
                 this->getPizzaNbr();
             else if (commandLine == "STOP")
                 return;
-            else
+            else {
                 this->handlePizza(commandLine);
+            }
         }
         if (!queue.empty()) {
             Pizza tmp = this->queue.front();
@@ -145,5 +181,4 @@ bool Kitchen::tryRefill() noexcept
     }
     return false;
 }
-
 }
