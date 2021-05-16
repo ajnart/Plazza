@@ -13,9 +13,12 @@
 #include "Cook.hpp"
 #include "FoodStock.hpp"
 #include "MultiThread/NamedPipe.hpp"
-#include "MultiThread/SafeQueue.hpp"
 #include "Pizza.hpp"
+#include <iostream>
+#include <memory>
+#include <mutex>
 #include <optional>
+#include <queue>
 
 namespace Plazza
 {
