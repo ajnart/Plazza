@@ -9,9 +9,9 @@
 
 namespace Plazza
 {
-KitchenConnect::KitchenConnect(params_t params, int id)// : kitchen(params, id)
-    : write(id, NamedPipe::WRITE, true),
-    read(id, NamedPipe::READ, true)
+KitchenConnect::KitchenConnect(params_t params, int id) // : kitchen(params, id)
+    :
+    write(id, NamedPipe::WRITE, true), read(id, NamedPipe::READ, true)
 {
     this->id = id;
     int pid = Fork::plazzaFork();

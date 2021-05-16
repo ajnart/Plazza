@@ -55,7 +55,8 @@ void Reception::printStatus() noexcept
 {
     int idx = 1;
     if (kitchens.empty())
-        Logger::LogError("Couldn't print status. No kitchens are currently avilable.");
+        Logger::LogError(
+            "Couldn't print status. No kitchens are currently avilable.");
     for (auto& i: kitchens) {
         Logger::log("Kitchen #" + std::to_string(idx));
         idx++;

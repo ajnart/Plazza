@@ -6,9 +6,9 @@
 */
 
 #include "Kitchen.hpp"
+#include "Logger.hpp"
 #include "PlazzaException.hpp"
 #include <algorithm>
-#include "Logger.hpp"
 #include <chrono>
 #include <iostream>
 #include <tuple>
@@ -31,29 +31,26 @@ Kitchen::Kitchen(params_t params, int id) :
 }
 
 Kitchen::~Kitchen()
-{
-}
+{}
 
 void Kitchen::status(void) noexcept
 {
     Plazza::Ingredients_t i = this->Stock.getIngredients();
-        Logger::log("Ingredients:\n"
-                  "D:" + std::to_string(i.Does) + "\tT:" +
-                  std::to_string(i.Tomatoes) + "\tG:" +
-                  std::to_string(i.Gruyere) + "\nH:" +
-                  std::to_string(i.Ham) + "\tM:" +
-                  std::to_string(i.Mushrooms) + "\tS:" +
-                  std::to_string(i.Steak) + "\nE:" +
-                  std::to_string(i.Eggplant) + "\tGC:" +
-                  std::to_string(i.GoatCheese)
-                   + "\tCL:" + std::to_string(i.ChiefLove));
+    Logger::log(
+        "Ingredients:\n"
+        "D:" +
+        std::to_string(i.Does) + "\tT:" + std::to_string(i.Tomatoes) +
+        "\tG:" + std::to_string(i.Gruyere) + "\nH:" + std::to_string(i.Ham) +
+        "\tM:" + std::to_string(i.Mushrooms) +
+        "\tS:" + std::to_string(i.Steak) + "\nE:" + std::to_string(i.Eggplant) +
+        "\tGC:" + std::to_string(i.GoatCheese) +
+        "\tCL:" + std::to_string(i.ChiefLove));
 
     for (auto& i: this->Cooks)
         std::cout << (i.isBusy() ? "\033[31m •\033[0m" : "\033[32m •\033[0m");
     std::cout << std::endl;
     this->write->send("OK");
 }
-
 
 void Kitchen::getPizzaNbr() noexcept
 {

@@ -59,11 +59,13 @@ void NamedPipe::openPipe()
     if (this->type == READ) {
         readfd = open(fifo.data(), O_RDONLY);
         if (readfd < 0)
-            throw(Plazza::PlazzaException("Error while oppenning read " + fifo));
+            throw(
+                Plazza::PlazzaException("Error while oppenning read " + fifo));
     } else {
         writefd = open(fifo.data(), O_WRONLY);
         if (writefd < 0)
-            throw(Plazza::PlazzaException("Error while oppenning write " + fifo));
+            throw(
+                Plazza::PlazzaException("Error while oppenning write " + fifo));
     }
 }
 void NamedPipe::send(std::string msg)

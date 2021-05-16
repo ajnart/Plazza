@@ -17,7 +17,8 @@ bool ArgParse::isArgsNumberCorrect(int ac) noexcept
 {
     if (ac == 4)
         return true;
-    Logger::LogError("Wrong number of arguments. Do ./plazza -h to learn about the program.");
+    Logger::LogError(
+        "Wrong number of arguments. Do ./plazza -h to learn about the program.");
     return false;
 }
 
@@ -42,10 +43,9 @@ params_t ArgParse::ParseArgs(char** args)
 void ArgParse::printHelp() noexcept
 {
     Logger::log("Usage:\n"
-                 "- c:\tmultiplier for the cooking time of the pizzas.\n"
-                 "- n:\tthe number of cooks per kitchen.\n"
-                 "- t:\tthe time in milliseconds, used by the kitchen stock to "
-                 "replace ingredients.\n"
-                 "Example : ./plazza 2 5 2000"
-    );
+                "- c:\tmultiplier for the cooking time of the pizzas.\n"
+                "- n:\tthe number of cooks per kitchen.\n"
+                "- t:\tthe time in milliseconds, used by the kitchen stock to "
+                "replace ingredients.\n"
+                "Example : ./plazza 2 5 2000");
 }

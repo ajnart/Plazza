@@ -6,14 +6,13 @@
 */
 
 #include "Cook.hpp"
+#include "Logger.hpp"
 #include <chrono>
 #include <iostream>
 #include <unistd.h>
-#include "Logger.hpp"
 
 namespace Plazza
 {
-
 Cook::Cook()
 {
     this->busy = false;
@@ -38,7 +37,6 @@ void Cook::bake(int timeMs, Pizza pizza) noexcept
         t.join();
     }
     t = std::move(std::thread(&Cook::baking, this, timeMs));
-
 }
 
 void Cook::baking(int time)
@@ -52,6 +50,7 @@ void Cook::baking(int time)
     std::this_thread::sleep_for(std::chrono::milliseconds(time));
     /* std::cout << " pizza have beek baked!" << std::endl; */
     this->busy.store(false, std::memory_order_relaxed);
-    Logger::logfile("\r A cook has finished baking a pizza. Cooked for" + std::to_string(time) + " ms.\n");
+    Logger::logfile("\r A cook has finished baking a pizza. Cooked for" +
+                    std::to_string(time) + " ms.\n");
 }
 }
